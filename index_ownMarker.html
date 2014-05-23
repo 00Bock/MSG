@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MSG-Map</title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.1/mapbox.js'></script>
+	<link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.1/mapbox.css' rel='stylesheet' />
+
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css"/>
+</head>
+<body>
+	<div id="map" style="width: 1200px; height: 600px"></div>
+
+	<script src="../dist/leaflet.js"></script>
+	<script>
+		var map = L.map('map').setView([52.481707, 13.356576], 18);
+		L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+			maxZoom: 22,
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+				'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+			id: 'examples.map-20v6611k'
+		}).addTo(map);
+		/*
+		L.tileLayer('http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', {attribution: 'Mapnik'}).addTo(map);
+		
+		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+		});
+		*/
+
+		var LeafIcon = L.Icon.extend({
+			options: {
+				//shadowUrl: '../docs/images/leaf-shadow.png',
+				iconSize:     [70, 70],
+				//shadowSize:   [50, 64],
+				//iconAnchor:   [22, 94],
+				//shadowAnchor: [4, 62],
+				popupAnchor:  [0, -10]
+			}
+		});
+
+		var batterieIcon = new LeafIcon({iconUrl: 'pics/MSG_Batterie.png'}),
+			windIcon = new LeafIcon({iconUrl: 'pics/MSG_Windrad.png'});
+			chargingIcon = new LeafIcon({iconUrl: 'pics/MSGs-BBR-2_eAuto.png'});
+			photoIcon = new LeafIcon({iconUrl: 'pics/MSGs-BBR-2_SolarMover.png'});
+
+		L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("<h4>I am a battery.</h4> <p> Capacity: 80% </p>").addTo(map);
+		//L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("I am a batterie. <div class="popup_batterie_div"></div>").addTo(map);
+		L.marker([52.480709363158489 , 13.354642592715248], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+		L.marker([52.480940761989636, 13.355187736151281], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+		L.marker([52.481477334306206 , 13.3558540225731], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+		L.marker([52.481631597636024, 13.355892568068578], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+		L.marker([52.481631597636024, 13.355892568068578], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+		
+		L.marker([52.481252645445075, 13.356916776948395], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+		L.marker([52.48167184015486, 13.357115010925135], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+		L.marker([52.481797374733404, 13.356779623859563], {icon: chargingIcon}).bindPopup("I am a charging station.").addTo(map);
+		L.marker([52.482247714873587, 13.357158553524592], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+		L.marker([52.482262233874998, 13.357576761208112], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map);
+		//L.marker([52.482455631243511, 13.357434101623429], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map);
+		//L.marker([52.482058471303993, 13.357288699302121], {icon: photoIcon}).bindPopup("I am a wind wheel.").addTo(map);
+		
+		//L.marker([51.495, -0.083], {icon: redIcon}).bindPopup("I am a red leaf.").addTo(map);
+		//L.marker([51.49, -0.1], {icon: orangeIcon}).bindPopup("I am an orange leaf.").addTo(map);
+		var batteriediv = document.getElementsByClassName( 'popup_batterie_div' )[0];
+		batteriediv.innerHTML = 'I am the div';
+	</script>
+</body>
+</html>
