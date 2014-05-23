@@ -1,0 +1,1 @@
+Marker darstellen indem nur der Teil aus dem js rauskopiert wird 
