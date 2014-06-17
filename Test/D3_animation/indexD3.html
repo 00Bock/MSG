@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>D3-elements on a dark mapbox basemap</title>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"/>
+	<script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.1/mapbox.js'></script>
+	<link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.1/mapbox.css' rel='stylesheet' />
+    <script src='msg_points.js'></script>
+</head>
+<body>
+	<div id="map" style="width: 800px; height: 600px"></div>
+	<script src="json.js">//do we need this?</script>
+	<script type="text/javascript">
+		//create map
+		var map = L.mapbox.map('map').setView([52.481707, 13.356576], 17);
+      //set the basemap  
+		var darkMap = L.mapbox.tileLayer('examples.map-cnkhv76j').addTo(map);
+
+			
+	/*### add points ###*/
+		// points into variable
+		var msgPoints = msg_points; 
+		// add points with maki style + default popup
+		map.featureLayer.setGeoJSON(msgPoints).bindPopup("I'm a smart marker."); 
+	
+	
+	/*### add circles ###*/
+	//add D3 circles
+	// Initialize the SVG layer
+	map._initPathRoot()    
+
+	//pick up the SVG from the map object
+	var svg = d3.select("#map").select("svg"),
+	g = svg.append("g");
+	
+	d3.json("circlesMSG.json", function(collection) {
+		/* Add a LatLng object to each item in the dataset */
+		collection.objects.forEach(function(d) {
+			d.LatLng = new L.LatLng(d.circle.coordinates[0],
+									d.circle.coordinates[1])
+		})
+		//place the circles based on the coordinates of each of our objects
+		var feature = g.selectAll("circle")
+			.data(collection.objects)
+			.enter().append("circle")
+			.style("stroke", "black")  
+			.style("opacity", .6) 
+			.style("fill", "#ff0")
+			.attr("r", 20);  //here we have to add later the value
+		// reset-function for a fixed size
+		map.on("viewreset", update);
+		update();
+
+		function update() {
+			feature.attr("transform", 
+			function(d) { 
+				return "translate("+ 
+					map.latLngToLayerPoint(d.LatLng).x +","+ 
+					map.latLngToLayerPoint(d.LatLng).y +")";
+				}
+			)
+		}
+	});
+	
+	/*### add lines ###*/
+	// Add a second SVG element to Leaflet’s overlay pane to make sure that they fit together
+	var svg2 = d3.select(map.getPanes().overlayPane).append("svg2"),
+		// the g element make sure that the D3- and Leaflet-Layer has the same point of reference
+		g2 = svg2.append("g2").attr("class", "leaflet-zoom-hide");
+		
+	d3.json("line.json", function(geoShape) {
+		
+		// create a d3.geo.path to convert GeoJSON to SVG
+		//transform corectly the latitude/longitude coordinates to screen coordinates
+		var transform = d3.geo.transform({point: projectPoint}),
+		path = d3.geo.path().projection(transform);
+			
+		// create path elements for each of the features and append it to our g group
+		d3_features = g.selectAll("path")
+			.attr("class", "route") //inserted for transition -> not working
+			.data(geoShape.features)
+			.enter().append("path")
+			.style("stroke", "white")
+			.style("fill", "none");
+		
+		// make sure that the d3 element changes when we zoom or pan 
+		map.on("viewreset", reset);
+			
+		reset();
+			
+	// fit the SVG element to leaflet's map layer -> reset the d3-layer when the extant changes
+		function reset() {
+			//take the current coordinates of the topLeft and buttomRight corners
+			bounds = path.bounds(geoShape);
+			var topLeft = bounds[0],
+				bottomRight = bounds[1];
+				// apply the coordniates to the svg
+				svg2 .attr("width", bottomRight[0] - topLeft[0])
+					.attr("height", bottomRight[1] - topLeft[1])
+					.style("left", topLeft[0] + "px")
+					.style("top", topLeft[1] + "px");
+			g2 .attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+
+	// initialize the path data
+		d3_features.attr("d", path)
+					.style("fill-opacity", 0.7)
+					.attr('fill','blue');
+		}
+	
+	
+	// Use Leaflet to implement a D3 geometric transformation.
+	// take the latitude and longitudes and transform them into screen coordinates
+		function projectPoint(x, y) {
+			var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+			this.stream.point(point.x, point.y);
+		}
+	});
+	
+	//#####
+	//add animation --> not working
+	//example here: http://jsfiddle.net/5m35J/6/
+	//#####
+	console.log(path); //--> path is not allowed
+	var vis, xy, duration, offset, origin_x, origin_y, len, circle;
+	
+	// Draw a red circle on the map:
+	
+	var vis = d3.select("#map")
+		.data(json.features)
+      .enter();
+	
+    var group = vis.append("svg2:g2");
+    
+    var targetPath = d3.selectAll('.route')[0][0];
+    var pathNode = d3.select(targetPath).selectAll('path').node();
+    var pathLength = pathNode.getTotalLength();
+    
+    circle = group.append("circle")
+        .attr({
+        r: 10,
+        fill: '#f33',
+        transform: function () {
+            var p = pathNode.getPointAtLength(0)
+            return "translate(" + [p.x, p.y] + ")";
+        }
+    });
+
+    // Animate the circle:
+
+    duration = 1000;
+    circle.transition()
+        .duration(duration)
+        .ease("linear")
+        .attrTween("transform", function (d, i) {
+        return function (t) {
+            var p = pathNode.getPointAtLength(pathLength*t);
+            return "translate(" + [p.x, p.y] + ")";
+        }
+    });
+</script>
+</body>
+</html>
