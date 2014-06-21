@@ -1,7 +1,12 @@
-MSG
+MSG visualisation of energy
 ===
 
 automatic global monitoring system for micro smart grids
+
+Aktueller Stand
+- index.html -> Marker auf verschiedenen Basemaps mit Infopanel
+- index_ownMarker.html -> eigene Marker mit Popup
+- index_swipe.html -> Luftbild und dunkle Karte als Swipefunktion + Marker + D3-Elemente (nicht animiert) + Legende
 
 Instructions to access the BeMobility Database (In InnoZ) - from Windows 7
 by Mauricio Rojas
