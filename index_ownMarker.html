@@ -18,12 +18,13 @@
 	<script src="../dist/leaflet.js"></script>
 	<script>
 		var map = L.map('map').setView([52.481707, 13.356576], 18);
+		
 		L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
 			maxZoom: 22,
 			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
 				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
 				'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-			id: 'examples.map-20v6611k'
+			id: 'examples.map-51f69fea'
 		}).addTo(map);
 		/*
 		L.tileLayer('http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', {attribution: 'Mapnik'}).addTo(map);
@@ -36,7 +37,7 @@
 		var LeafIcon = L.Icon.extend({
 			options: {
 				//shadowUrl: '../docs/images/leaf-shadow.png',
-				iconSize:     [70, 70],
+				iconSize:     [80, 80],
 				//shadowSize:   [50, 64],
 				//iconAnchor:   [22, 94],
 				//shadowAnchor: [4, 62],
@@ -44,10 +45,10 @@
 			}
 		});
 
-		var batterieIcon = new LeafIcon({iconUrl: 'pics/MSG_Batterie.png'}),
-			windIcon = new LeafIcon({iconUrl: 'pics/MSG_Windrad.png'});
-			chargingIcon = new LeafIcon({iconUrl: 'pics/MSGs-BBR-2_eAuto.png'});
-			photoIcon = new LeafIcon({iconUrl: 'pics/MSGs-BBR-2_SolarMover.png'});
+		var batterieIcon = new LeafIcon({iconUrl: 'pics/battery_ebattery.png'}),
+			windIcon = new LeafIcon({iconUrl: 'pics/producer_wind.png'});
+			chargingIcon = new LeafIcon({iconUrl: 'pics/battery_ecar.png'});
+			photoIcon = new LeafIcon({iconUrl: 'pics/producer_solar.png'});
 
 		L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("<h4>I am a battery.</h4> <p> Capacity: 80% </p>").addTo(map);
 		//L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("I am a batterie. <div class="popup_batterie_div"></div>").addTo(map);
