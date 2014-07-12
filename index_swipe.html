@@ -9,7 +9,7 @@
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<style>
 	  body { margin:0; padding:0; }
-	  #map { position:absolute; top:0; bottom:0; width:100%; }
+	  #map { position:absolute; top:50px; bottom:0; width:100%; }
 	</style>
 </head>
 <body>
@@ -19,7 +19,7 @@
 	<!-- Styles definieren-->
 	<style>
 	.range {
-	  margin-top: 10px;
+	  margin-top: 60px;
 		-webkit-appearance: none !important;
 		background:rgba(255,255,255,0.7);
 		height:30px;
@@ -39,8 +39,26 @@
 	  font-size:9px;
 	  color:#808080;
 	  }
-	
+	#logo {
+	  background-color:#FFDDDD;
+	  font-size:20px;
+	  font-family:arial;
+	  color:#00A2FF;
+	  margin:0; 
+	  padding:0; 
+	  position:absolute; 
+	  top:0; 
+	  bottom:0; 
+	  width:100%;
+	  border-color:#999;
+	  letter-spacing:0.1em;
+	  font-weight:bold;
+	}
 	</style>
+	<!-- Logo hinzufügen-->
+	<div id='logo' style="background-color:#2a2a2a", font-color:white">
+	<p style="text-align:center;">SmartEnergyMap</p>
+	</div>
 	<!-- Legende hinzufügen-->
 	<div id='legend' style='display:none;'>
 	  <strong>Energieströme im Micro-Smart-Grid</strong>
