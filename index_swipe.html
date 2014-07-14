@@ -39,11 +39,11 @@
 	  font-size:9px;
 	  color:#808080;
 	  }
-	#logo {
+	#titleLine {
 	  background-color:#FFDDDD;
 	  font-size:20px;
 	  font-family:arial;
-	  color:#00A2FF;
+	  color:#d3d3d3;
 	  margin:0; 
 	  padding:0; 
 	  position:absolute; 
@@ -54,10 +54,16 @@
 	  letter-spacing:0.1em;
 	  font-weight:bold;
 	}
+	#logo{position:fixed;
+	bottom:20px;
+	left:10px;
+	z-index:7;
+	width: 250px;
+    height: 80px;}
 	</style>
-	<!-- Logo hinzufügen-->
-	<div id='logo' style="background-color:#2a2a2a", font-color:white">
-	<p style="text-align:center;">SmartEnergyMap</p>
+	<!-- Titel hinzufügen-->
+	<div id='titleLine' style="background-color:#2a2a2a", font-color:white">
+	<p style="text-align:center;">Willkommen bei der intelligenten Energiekarte!</p>
 	</div>
 	<!-- Legende hinzufügen-->
 	<div id='legend' style='display:none;'>
@@ -74,6 +80,9 @@
 	  <p style="font-size:1 em"> *** = 3mW </p>
 	  <small>Source: <a href="#link to source">Name of source</a></small>
 	</div>
+	<!-- Logo hinzufügen-->
+	<div><img id="logo" src="img/logo2.png"></div>
+	
 	<!-- Karte hinzufügen-->
 	<div id='map'></div>
 	<input id='range' class='range' type='range' min='0' max='1.0' step='any' />
@@ -81,9 +90,9 @@
 	<script>
 	//### Karte mit Swipefunktion erstellen ###
 	var map = L.mapbox.map('map', null, {minZoom:18});
-	L.mapbox.tileLayer('examples.map-cnkhv76j').addTo(map); //mapbox-id for black map
+	L.mapbox.tileLayer('examples.map-b70jh5xu').addTo(map); //mapbox-id for simple map
 
-	var overlay = L.mapbox.tileLayer('examples.map-b70jh5xu').addTo(map); //mapbox-id for simple map
+	var overlay = L.mapbox.tileLayer('examples.map-cnkhv76j').addTo(map); //mapbox-id for black map
 	var range = document.getElementById('range');
 
 	function clip() {
