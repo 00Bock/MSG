@@ -24,6 +24,10 @@
     <![endif]-->
   </head>
   <body>
+	<!-- Daten einladen-->
+	<script src='data/msgPoints.js'></script>
+	<script src='data/msgLines.js'></script>
+  
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -45,8 +49,9 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		  <ul class="nav navbar-nav">
-			<li class="active"><a href="#">Projekt</a></li>
-			<li><a href="#">Link</a></li>
+			<li class="active"><a href="#">Map</a></li>
+			<li><a href="#">About</a></li>
+			<!-- 
 			<li class="dropdown">
 			  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
 			  <ul class="dropdown-menu" role="menu">
@@ -76,6 +81,7 @@
 				<li><a href="#">Something else here</a></li>
 				<li class="divider"></li>
 				<li><a href="#">Separated link</a></li>
+				<span class="glyphicon glyphicon-info-sign"></span>
 			  </ul>
 			</li>
 		  </ul>
@@ -90,6 +96,80 @@
 					.setView([52.481707, 13.356576], 17);
 		//### Hintergrundkarten definieren ###
 		var coolMap = L.mapbox.tileLayer('examples.map-51f69fea').addTo(map);
+		
+		//### Punkte und Linien einbinden ###
+		var msgPoints = msgPoints; //schreibt js-Inhalt in Variable
+
+		//Punkte hinzufügen --> alte Punkte
+		//map.featureLayer.setGeoJSON(msgPoints); // add points with style
+
+		//Popup hinzufügen --> vertragt sich nicht mit dem style und überlagert sich daher mit den bereits eingefügten Punkten
+		/*
+		var myLayer = L.geoJson(msgPoints, {
+			// style: function (feature) {
+			//     return feature.properties.style;
+			// },
+			 onEachFeature: function (feature, layer) {
+				 layer.bindPopup(feature.properties.type + '</br>' + 
+									'Energiewert: ' + feature.properties.value);
+			 }
+		 });
+
+		 
+		//myLayer.addData(msgPoints);
+		myLayer.addTo(map);
+		*/
+		
+		//### hinzufügen von individuellen Markern ###
+		// dafür sollte eine Funktion erstellt werden!
+			var LeafIcon = L.Icon.extend({
+				options: {
+					//shadowUrl: '../docs/images/leaf-shadow.png',
+					iconSize:     [70, 70],
+					//shadowSize:   [50, 64],
+					//iconAnchor:   [22, 94],
+					//shadowAnchor: [4, 62],
+					popupAnchor:  [0, -10]
+				}
+			});
+
+			var batterieIcon = new LeafIcon({iconUrl: 'img/battery_ebattery_w.png'}),
+				windIcon = new LeafIcon({iconUrl: 'img/producer_wind_w.png'});
+				chargingIcon = new LeafIcon({iconUrl: 'img/battery_ecar_w.png'});
+				photoIcon = new LeafIcon({iconUrl: 'img/producer_solar_w.png'});
+
+			L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("<h4>I am a battery.</h4> <p> Capacity: 80% </p>").addTo(map);
+			//L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("I am a batterie. <div class="popup_batterie_div"></div>").addTo(map);
+			L.marker([52.480688658255012 , 13.354568528677662], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+			L.marker([52.480911923161734, 13.355110029627905], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+			L.marker([52.481457 , 13.355791], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+			L.marker([52.48159684369503, 13.355837930668985], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+			L.marker([52.481227, 13.356873], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+			L.marker([52.481662, 13.357115], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+			//L.marker([52.48167184015486, 13.357115010925135], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+			//L.marker([52.481797374733404, 13.356779623859563], {icon: chargingIcon}).bindPopup("I am a charging station.").addTo(map);
+			//L.marker([52.482247714873587, 13.357158553524592], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+			L.marker([52.482262, 13.357565], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map);
+			L.marker([52.482455631243511, 13.357434101623429], {icon: photoIcon}).bindPopup("I am a solar mover.").addTo(map);
+			L.marker([52.481356, 13.355660], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map);
+			//L.marker([52.482455631243511, 13.357434101623429], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map);
+			//L.marker([52.482058471303993, 13.357288699302121], {icon: photoIcon}).bindPopup("I am a wind wheel.").addTo(map);
+			//L.marker([51.495, -0.083], {icon: redIcon}).bindPopup("I am a red leaf.").addTo(map);
+			//L.marker([51.49, -0.1], {icon: orangeIcon}).bindPopup("I am an orange leaf.").addTo(map);
+			//var batteriediv = document.getElementsByClassName( 'popup_batterie_div' )[0];
+			//batteriediv.innerHTML = 'I am the div';
+		
+		//### add Lines with Leaflet-Funktion
+		//Linien befinden sich später in der D3-Ebene
+		var lines = msgLines;
+		
+		var myStyle = {
+			"color": "#0099CC",
+			"weight": 3,
+			"opacity": 0.65
+		};
+		L.geoJson(lines, {style: myStyle}).addTo(map);
+		
 		</script>
 	</div>
 	<!-- Animationsknopf hinzufügen-->
