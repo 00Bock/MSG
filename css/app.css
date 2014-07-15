@@ -6,3 +6,17 @@ html, body, #map {
 body {
   padding-top: 50px;
 }
+#animationButton{
+	position:fixed;
+	top:60px;
+	right:10px;
+	z-index:7;
+	width: 200px;
+    height:90px;
+}
+#logo{position:fixed;
+	bottom:20px;
+	left:10px;
+	z-index:7;
+	width: 180px;
+    height: 60px;}
