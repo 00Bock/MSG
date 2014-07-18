@@ -62,11 +62,11 @@ body {
 }
 #locationLegend{
 	position:fixed;
-	bottom:20px;
+	bottom:60px;
 	left:10px;
 	z-index:7;
-	width: 200px;
-    height: 280px;
+	width: 150px;
+    height: 225px;
 	border-radius: 10px;
 	opacity: 0.95;
 }
