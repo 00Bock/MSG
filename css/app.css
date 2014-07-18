@@ -51,4 +51,15 @@ body {
 	color: white;
 	font-size:1.5em;
 }
-
+#currentTime{
+	position:fixed;
+	top:150px;
+	right:10px;
+	z-index:7;
+	color: white;
+	font-size:1.5em;
+	font-family: Courier New;
+}
+.leaflet-popup-content {
+width:auto !important;
+}

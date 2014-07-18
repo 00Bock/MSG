@@ -117,7 +117,9 @@
 	<!--<div><img id="logo" src="img/logo2.png"></div>-->
 	<div id="titleLocation">Location-View</div>
 	<div id="titleEnergy">Energy-View</div>
+	<div id="currentTime"></div>
 		<script>
+		
 		/*
 		//### Inizialisierung der Karte ###
 		var map = L.mapbox.map('map')
@@ -185,6 +187,7 @@
 		
 		//### hinzufügen von individuellen Markern ###
 		// dafür sollte eine Funktion erstellt werden!
+			//große Symbole
 			var LeafIcon = L.Icon.extend({
 				options: {
 					//shadowUrl: '../docs/images/leaf-shadow.png',
@@ -195,33 +198,97 @@
 					popupAnchor:  [0, -10]
 				}
 			});
+			//kleine Symbole
+			var LeafIconLittle = L.Icon.extend({
+				options: {
+					//shadowUrl: '../docs/images/leaf-shadow.png',
+					iconSize:     [30, 28],
+					//shadowSize:   [50, 64],
+					//iconAnchor:   [22, 94],
+					//shadowAnchor: [4, 62],
+					popupAnchor:  [0, -10]
+				}
+			});
 
 			var batterieIcon = new LeafIcon({iconUrl: 'img/battery_ebattery_w.png'}),
-				windIcon = new LeafIcon({iconUrl: 'img/producer_wind_w.png'});
-				chargingIcon = new LeafIcon({iconUrl: 'img/battery_ecar_w.png'});
-				photoIcon = new LeafIcon({iconUrl: 'img/producer_solar_blue3.png'});
-
-			L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("<h4>I am a battery.</h4> <p> Capacity: 80% </p>").addTo(map1);
-			//L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("I am a batterie. <div class="popup_batterie_div"></div>").addTo(map);
-			L.marker([52.480688658255012 , 13.354568528677662], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map1);
-			L.marker([52.480911923161734, 13.355110029627905], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map1);
-			L.marker([52.481457 , 13.355791], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map1);
-			L.marker([52.48159684369503, 13.355837930668985], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map1);
-			L.marker([52.481227, 13.356873], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map1);
-			L.marker([52.481662, 13.357115], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map1);
-			//L.marker([52.48167184015486, 13.357115010925135], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
-			//L.marker([52.481797374733404, 13.356779623859563], {icon: chargingIcon}).bindPopup("I am a charging station.").addTo(map);
-			//L.marker([52.482247714873587, 13.357158553524592], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
-			L.marker([52.482262, 13.357565], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map1);
-			L.marker([52.482455631243511, 13.357434101623429], {icon: photoIcon}).bindPopup("I am a solar mover.").addTo(map1);
-			L.marker([52.481356, 13.355660], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map1);
-			//L.marker([52.482455631243511, 13.357434101623429], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map);
-			//L.marker([52.482058471303993, 13.357288699302121], {icon: photoIcon}).bindPopup("I am a wind wheel.").addTo(map);
-			//L.marker([51.495, -0.083], {icon: redIcon}).bindPopup("I am a red leaf.").addTo(map);
-			//L.marker([51.49, -0.1], {icon: orangeIcon}).bindPopup("I am an orange leaf.").addTo(map);
-			//var batteriediv = document.getElementsByClassName( 'popup_batterie_div' )[0];
-			//batteriediv.innerHTML = 'I am the div';
+				windIcon = new LeafIcon({iconUrl: 'img/producer_wind_w.png'}),
+				chargingIcon = new LeafIcon({iconUrl: 'img/battery_ecar_w.png'}),
+				photoIcon = new LeafIcon({iconUrl: 'img/producer_solar_w.png'}),
+				brainIcon = new LeafIcon({iconUrl: 'img/minigrid_minigrid_w.png'}),
+				netIcon = new LeafIconLittle({iconUrl: 'img/netconnectionT.png'});
+			
+			//Add marker to Map1
+			L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).addTo(map1);
+			L.marker([52.480688658255012 , 13.354568528677662], {icon: windIcon}).addTo(map1);
+			L.marker([52.480911923161734, 13.355110029627905], {icon: windIcon}).addTo(map1);
+			L.marker([52.481457 , 13.355791], {icon: windIcon}).addTo(map1);
+			L.marker([52.48159684369503, 13.355837930668985], {icon: windIcon}).addTo(map1);
+			L.marker([52.481227, 13.356873], {icon: windIcon}).addTo(map1);
+			L.marker([52.481662, 13.357115], {icon: windIcon}).addTo(map1);
+			L.marker([52.482262, 13.357565], {icon: photoIcon}).addTo(map1);
+			L.marker([52.482455631243511, 13.357434101623429], {icon: photoIcon}).addTo(map1);
+			L.marker([52.481356, 13.355660], {icon: photoIcon}).addTo(map1);
+			L.marker([52.480605, 13.354743], {icon: netIcon}).addTo(map1);
+			L.marker([52.482146, 13.357430], {icon: brainIcon}).addTo(map1);
+			
+			//Add marker to Map2 with popup
+			L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("<h4>I am a battery.</h4> <p> Capacity: 80% </p>").addTo(map2);
+			L.marker([52.480688658255012 , 13.354568528677662], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
+			L.marker([52.480911923161734, 13.355110029627905], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
+			L.marker([52.481457 , 13.355791], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
+			L.marker([52.48159684369503, 13.355837930668985], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
+			L.marker([52.481227, 13.356873], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
+			L.marker([52.481662, 13.357115], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
+			L.marker([52.482262, 13.357565], {icon: photoIcon}).bindPopup("<img src='img/popup_small.png'/>").addTo(map2);
+			L.marker([52.482455631243511, 13.357434101623429], {icon: photoIcon}).bindPopup("I am a solar mover.").addTo(map2);
+			L.marker([52.481356, 13.355660], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map2);
+			L.marker([52.480605, 13.354743], {icon: netIcon}).bindPopup("Connection to the electric grid.").addTo(map2);
+			L.marker([52.482146, 13.357430], {icon: brainIcon}).bindPopup("I am the brain of the grid.").addTo(map2);
 		
+		
+		//Add Energy-Circles
+		//Code-Example: http://stackoverflow.com/questions/22467177/draw-a-circle-of-constant-size-for-all-zoom-levels-leaflet-js
+		var windValue1 = 0.5;
+		var windValue2 = 1;
+		/*
+		//Berechnung der Kreisgröße anhand der Stevenschen psychophisischen Potenzfunktion
+		var circleRadius1 = (Math.pow(windValue1, (5/7)))/(Math.sqrt(2*Math.PI));
+		var circleRadius2 = (Math.pow(windValue2, (5/7)))/(Math.sqrt(2*Math.PI));
+		
+		var circleRadius1 = windValue1 * 20;
+		var circleRadius2 = windValue2 * 20;
+		var coordinates1 = [52.481227, 13.354743];
+		var coordinates2 = [52.48166, 13.357115];
+		drawCircle(circleRadius1, coordinates1);
+		drawCircle(circleRadius2, coordinates2);
+		
+		function drawCircle(circleRadius, coordinates) {
+		var circleStyle = {
+			fillColor: '#00BFFF',
+			fillOpacity: 0.5
+		};
+		var circle = L.circle(coordinates, circleRadius, circleStyle).addTo(map2);
+
+		var myZoom = {
+		  start:  map2.getZoom(),
+		  end: map2.getZoom()
+		};
+
+		map2.on('zoomstart', function(e) {
+		   myZoom.start = map2.getZoom();
+		});
+
+		map2.on('zoomend', function(e) {
+			myZoom.end = map2.getZoom();
+			var diff = myZoom.start - myZoom.end;
+			if (diff > 0) {
+				circle.setRadius(circle.getRadius() * 2);
+			} else if (diff < 0) {
+				circle.setRadius(circle.getRadius() / 2);
+			}
+		});
+		}
+		*/
 		//### add Lines with Leaflet-Funktion
 		//Linien befinden sich später in der D3-Ebene
 		var lines = msgLines;
@@ -412,6 +479,29 @@
 		counter++;
 		};
 	};
+		//### Aktuelle Zeit anzeigen ###
+		//Code-Example: http://jsfiddle.net/cse_tushar/fKKSb/
+		function checkTime(i) {
+			if (i < 10) {
+				i = "0" + i;
+			}
+			return i;
+		}
+
+		function startTime() {
+			var today = new Date();
+			var h = today.getHours();
+			var m = today.getMinutes();
+			var s = today.getSeconds();
+			// add a zero in front of numbers<10
+			m = checkTime(m);
+			s = checkTime(s);
+			document.getElementById('currentTime').innerHTML = h + ":" + m + ":" + s;
+			t = setTimeout(function () {
+				startTime()
+			}, 500);
+		}
+		startTime();
 		
 		</script>
   </body>
