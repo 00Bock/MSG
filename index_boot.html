@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap-Test</title>
 	
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	
 	<!-- App -->
     <link href="css/app.css" rel="stylesheet">
 	
@@ -27,6 +29,7 @@
 	<!-- Daten einladen-->
 	<script src='data/msgPoints.js'></script>
 	<script src='data/msgLines.js'></script>
+	<script src="data/line.js">//do we need this? -> yes</script>
   
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -43,7 +46,7 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		  </button>
-		  <a class="navbar-brand" href="#">SmartEnergyMap</a>
+		  <a class="navbar-brand" href="index_boot.html">SmartEnergyMap</a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -51,6 +54,7 @@
 		  <ul class="nav navbar-nav">
 			<li class="active"><a href="#">Map</a></li>
 			<li><a href="#">About</a></li>
+			<li><img id="navLogo" src="img/logo2.png"></li>
 			<!-- 
 			<li class="dropdown">
 			  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
@@ -83,19 +87,78 @@
 				<li><a href="#">Separated link</a></li>
 				<span class="glyphicon glyphicon-info-sign"></span>
 			  </ul>
-			</li>
+			</li>-->
 		  </ul>
 		</div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->
 	</nav>
 	<!-- The Map -->
-	<div id="map">
+	<div id="map"></div>
+	<div id='map1'></div>
+	<div id='map2'></div>
+	<!-- Animationsknopf hinzufügen
+	<div>
+		<img id="animationButton" src="img/animationButton.png">
+		<input 	name="animationButton"
+					type="image"
+					value="Start Animation"	
+					src="img/animationButton.png
+			/>
+	</div>
+	<!-- Add a div for the button onclick="startAnimation()" -->
+		<div id="animationButton">
+			<input 	name="animationButton"
+					type="button"
+					value="Start Animation"	
+					onclick="startAnimation()"
+			/>
+		</div>
+	<!-- Animationsknopf hinzufügen-->
+	<!--<div><img id="logo" src="img/logo2.png"></div>-->
+	<div id="titleLocation">Location-View</div>
+	<div id="titleEnergy">Energy-View</div>
 		<script>
+		/*
 		//### Inizialisierung der Karte ###
 		var map = L.mapbox.map('map')
-					.setView([52.481707, 13.356576], 17);
+					.setView([52.481707, 13.356576], 18);
 		//### Hintergrundkarten definieren ###
 		var coolMap = L.mapbox.tileLayer('examples.map-51f69fea').addTo(map);
+		*/
+		// Instead of our usual one map, we will create two in this example to make
+		// things interesting.
+		var map1 = L.mapbox.map('map1', 'examples.map-b70jh5xu', {opacity: 0.5})
+			.setView([52.481707,13.356576], 17);
+		var map2 = L.mapbox.map('map2', 'examples.map-cnkhv76j', { zoomControl:false })
+			.setView([52.481707,13.356576], 17);
+
+		// when either map finishes moving, trigger an update on the other one.
+		map1.on('moveend', follow).on('zoomend', follow);
+		map2.on('moveend', follow).on('zoomend', follow);
+
+		// quiet is a cheap and dirty way of avoiding a problem in which one map
+		// syncing to another leads to the other map syncing to it, and so on
+		// ad infinitum. this says that while we are calling sync, do not try to 
+		// loop again and sync other maps
+		var quiet = false;
+		function follow(e) {
+			if (quiet) return;
+			quiet = true;
+			if (e.target === map1) sync(map2, e);
+			if (e.target === map2) sync(map1, e);
+			quiet = false;
+		}
+
+		// sync simply steals the settings from the moved map (e.target)
+		// and applies them to the other map.
+		function sync(map, e) {
+			map.setView(e.target.getCenter(), e.target.getZoom(), {
+				animate: false,
+				reset: true
+			});
+		}
+		
+		
 		
 		//### Punkte und Linien einbinden ###
 		var msgPoints = msgPoints; //schreibt js-Inhalt in Variable
@@ -125,7 +188,7 @@
 			var LeafIcon = L.Icon.extend({
 				options: {
 					//shadowUrl: '../docs/images/leaf-shadow.png',
-					iconSize:     [70, 70],
+					iconSize:     [80, 80],
 					//shadowSize:   [50, 64],
 					//iconAnchor:   [22, 94],
 					//shadowAnchor: [4, 62],
@@ -136,22 +199,22 @@
 			var batterieIcon = new LeafIcon({iconUrl: 'img/battery_ebattery_w.png'}),
 				windIcon = new LeafIcon({iconUrl: 'img/producer_wind_w.png'});
 				chargingIcon = new LeafIcon({iconUrl: 'img/battery_ecar_w.png'});
-				photoIcon = new LeafIcon({iconUrl: 'img/producer_solar_w.png'});
+				photoIcon = new LeafIcon({iconUrl: 'img/producer_solar_blue3.png'});
 
-			L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("<h4>I am a battery.</h4> <p> Capacity: 80% </p>").addTo(map);
+			L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("<h4>I am a battery.</h4> <p> Capacity: 80% </p>").addTo(map1);
 			//L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("I am a batterie. <div class="popup_batterie_div"></div>").addTo(map);
-			L.marker([52.480688658255012 , 13.354568528677662], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
-			L.marker([52.480911923161734, 13.355110029627905], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
-			L.marker([52.481457 , 13.355791], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
-			L.marker([52.48159684369503, 13.355837930668985], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
-			L.marker([52.481227, 13.356873], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
-			L.marker([52.481662, 13.357115], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
+			L.marker([52.480688658255012 , 13.354568528677662], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map1);
+			L.marker([52.480911923161734, 13.355110029627905], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map1);
+			L.marker([52.481457 , 13.355791], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map1);
+			L.marker([52.48159684369503, 13.355837930668985], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map1);
+			L.marker([52.481227, 13.356873], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map1);
+			L.marker([52.481662, 13.357115], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map1);
 			//L.marker([52.48167184015486, 13.357115010925135], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
 			//L.marker([52.481797374733404, 13.356779623859563], {icon: chargingIcon}).bindPopup("I am a charging station.").addTo(map);
 			//L.marker([52.482247714873587, 13.357158553524592], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map);
-			L.marker([52.482262, 13.357565], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map);
-			L.marker([52.482455631243511, 13.357434101623429], {icon: photoIcon}).bindPopup("I am a solar mover.").addTo(map);
-			L.marker([52.481356, 13.355660], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map);
+			L.marker([52.482262, 13.357565], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map1);
+			L.marker([52.482455631243511, 13.357434101623429], {icon: photoIcon}).bindPopup("I am a solar mover.").addTo(map1);
+			L.marker([52.481356, 13.355660], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map1);
 			//L.marker([52.482455631243511, 13.357434101623429], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map);
 			//L.marker([52.482058471303993, 13.357288699302121], {icon: photoIcon}).bindPopup("I am a wind wheel.").addTo(map);
 			//L.marker([51.495, -0.083], {icon: redIcon}).bindPopup("I am a red leaf.").addTo(map);
@@ -168,13 +231,188 @@
 			"weight": 3,
 			"opacity": 0.65
 		};
-		L.geoJson(lines, {style: myStyle}).addTo(map);
+		L.geoJson(lines, {style: myStyle}).addTo(map1);
+		
+		/*
+		var animation = document.getElementById('animationButton');
+		animation.onclick = function startAnimation() {
+			alert("Diese Funktion wird gerade implementiert. Die Energieströme werden bald fließen!");
+		};
+		*/
+		//initialize the variable myPath
+		var myPath;
+		//initialize the animationFunction und access the button over the DOM
+		//example --> http://jsfiddle.net/pFYUM/1/
+		var animationFunction = document.getElementById('animationButton');
+			
+	
+		/*### add a d3 svg/g-element to the map ###*/
+		// Initialize the SVG layer
+		map2._initPathRoot()    
+		//pick up the SVG from the map object
+		var svg = d3.select("#map2").select("svg"),
+		g = svg.append("g")
+				.attr("class", "route");
+				
+		/*### add lines ###*/
+		// Add a second SVG element to Leaflet’s overlay pane to make sure that they fit together
+		var svg2 = d3.select(map2.getPanes().overlayPane).append("svg2"),
+			// the g element make sure that the D3- and Leaflet-Layer has the same point of reference
+			g2 = svg2.append("g2").attr("class", "leaflet-zoom-hide");
+		
+		//load the json-data	
+		//d3.json("", function(geoShape) {
+			// create a d3.geo.path to convert GeoJSON to SVG
+			//transform corectly the latitude/longitude coordinates to screen coordinates
+			var transform = d3.geo.transform({point: projectPoint}),
+			path = d3.geo.path().projection(transform);
+				
+			// create path elements for each of the features and append it to our g group
+			d3_features = g.selectAll("path")
+				.data(msgLines.features)
+				.enter().append("path").attr("d", path)
+				.attr('id', 'ff')
+				.style("stroke", "white")
+				//.style("stroke-width", 9)
+				.style("fill", "none");
+			
+			// make sure that the d3 element changes when we zoom or pan 
+			map2.on("viewreset", reset);
+				
+			reset();
+				
+		// fit the SVG element to leaflet's map layer -> reset the d3-layer when the extant changes
+			function reset() {
+				//take the current coordinates of the topLeft and buttomRight corners
+				bounds = path.bounds(msgLines);
+				var topLeft = bounds[0],
+					bottomRight = bounds[1];
+					// apply the coordniates to the svg
+					svg2.attr("width", bottomRight[0] - topLeft[0])
+						.attr("height", bottomRight[1] - topLeft[1])
+						.style("left", topLeft[0] + "px")
+						.style("top", topLeft[1] + "px");
+					g2.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+
+		// initialize the path data
+			d3_features.attr("d", path)
+						.style("fill-opacity", 0.7)
+						.attr('fill','blue');
+			}
+		
+		// Use Leaflet to implement a D3 geometric transformation.
+		// take the latitude and longitudes and transform them into screen coordinates
+			function projectPoint(x, y) {
+				var point = map2.latLngToLayerPoint(new L.LatLng(y, x));
+				this.stream.point(point.x, point.y);
+			}
+			
+		//### animate the path --> use the function###
+		//original code from here: http://jsfiddle.net/5m35J/6/
+		//animationFunction.onclick = startAnimation;
+			
+		//});
+	
+	//### animate the path --> this is the function###
+	//original code from here: http://jsfiddle.net/5m35J/6/
+	function startAnimation() {
+		
+		// declare some variables
+		var vis, xy, duration, offset, origin_x, origin_y, len, circle, circle2, circle3;
+
+		// select the correct layer
+		var vis = d3.select(".leaflet-overlay-pane")
+			.data(line.features)
+			.enter();
+		console.log(vis);
+		//var countLength = msgLines.length;
+		//console.log(countLength);
+		
+		//for loop for each feature in the jsonfile
+		var counter = 0;
+		for (feature in msgLines.features) {
+		console.log("JUHUUUU!");
+		
+		var group = svg.append("svg:g");
+		
+		//take the path from the geojson
+		var targetPath = d3.selectAll('.route')[0][0];
+		console.log(targetPath);
+		var pathNode = d3.select(targetPath).selectAll('path').node();
+		console.log("pathNode");
+		console.log(pathNode);
+		var pathLength = pathNode.getTotalLength();
+		console.log(pathLength);
+		
+		//append the circle to the first vertex of the geojson
+		circle = group.append("circle")
+			.attr({
+			r: 5,
+			fill: '#00BFFF',
+			transform: function () {
+				var p = pathNode.getPointAtLength(0)
+				return "translate(" + [p.x, p.y] + ")";
+			}
+		});
+		console.log(circle);
+		
+		circle2 = group.append("circle")
+			.attr({
+			r: 5,
+			fill: '#00BFFF',
+			transform: function () {
+				var p = pathNode.getPointAtLength(0)
+				return "translate(" + [p.x, p.y] + ")";
+			}
+		});
+		circle3 = group.append("circle")
+			.attr({
+			r: 5,
+			fill: '#00BFFF',
+			transform: function () {
+				var p = pathNode.getPointAtLength(0)
+				return "translate(" + [p.x, p.y] + ")";
+			}
+		});
+
+		// move the circle along the path
+		duration = 1000;
+		circle.transition()
+			.duration(duration)
+				.delay(750)
+			.ease("linear")
+			.attrTween("transform", function (d, i) {
+			return function (t) {
+				var p = pathNode.getPointAtLength(pathLength*t);
+				return "translate(" + [p.x, p.y] + ")";
+			}
+		});
+		circle2.transition()
+			.duration(duration)
+				.delay(1000)
+			.ease("linear")
+			.attrTween("transform", function (d, i) {
+			return function (t) {
+				var p = pathNode.getPointAtLength(pathLength*t);
+				return "translate(" + [p.x, p.y] + ")";
+			}
+		});
+		
+		circle3.transition()
+			.duration(duration)
+				.delay(1250)
+			.ease("linear")
+			.attrTween("transform", function (d, i) {
+			return function (t) {
+				var p = pathNode.getPointAtLength(pathLength*t);
+				return "translate(" + [p.x, p.y] + ")";
+			}
+		});
+		
+		counter++;
+		};
+	};
 		
 		</script>
-	</div>
-	<!-- Animationsknopf hinzufügen-->
-	<div><img id="animationButton" src="img/animationButton.png"></div>
-	<!-- Animationsknopf hinzufügen-->
-	<div><img id="logo" src="img/logo2.png"></div>
   </body>
 </html>
