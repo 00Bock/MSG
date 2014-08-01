@@ -30,6 +30,17 @@
 	<script src='data/msgPoints.js'></script>
 	<script src='data/msgLines.js'></script>
 	<script src="data/line.js">//do we need this? -> yes</script>
+	<script src="data/line1.js"></script>
+	<script src="data/line2.js"></script>
+	<script src="data/line3.js"></script>
+	<script src="data/line4.js"></script>
+	<script src="data/line5.js"></script>
+	<script src="data/line6.js"></script>
+	<script src="data/line7.js"></script>
+	<script src="data/line8.js"></script>
+	<script src="data/line9.js"></script>
+	<script src="data/line10.js"></script>
+	<script src='data/data_producer.js'></script>
   
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -55,39 +66,6 @@
 			<li class="active"><a href="#">Map</a></li>
 			<li><a href="#">About</a></li>
 			<li><img id="navLogo" src="img/logo2.png"></li>
-			<!-- 
-			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
-			  <ul class="dropdown-menu" role="menu">
-				<li><a href="#">Action</a></li>
-				<li><a href="#">Another action</a></li>
-				<li><a href="#">Something else here</a></li>
-				<li class="divider"></li>
-				<li><a href="#">Separated link</a></li>
-				<li class="divider"></li>
-				<li><a href="#">One more separated link</a></li>
-			  </ul>
-			</li>
-		  </ul>
-		  <form class="navbar-form navbar-left" role="search">
-			<div class="form-group">
-			  <input type="text" class="form-control" placeholder="Search">
-			</div>
-			<button type="submit" class="btn btn-default">Submit</button>
-		  </form>
-		  <ul class="nav navbar-nav navbar-right">
-			<li><a href="#">Link</a></li>
-			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
-			  <ul class="dropdown-menu" role="menu">
-				<li><a href="#">Action</a></li>
-				<li><a href="#">Another action</a></li>
-				<li><a href="#">Something else here</a></li>
-				<li class="divider"></li>
-				<li><a href="#">Separated link</a></li>
-				<span class="glyphicon glyphicon-info-sign"></span>
-			  </ul>
-			</li>-->
 		  </ul>
 		</div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->
@@ -131,9 +109,9 @@
 		// Instead of our usual one map, we will create two in this example to make
 		// things interesting.
 		var map1 = L.mapbox.map('map1', 'examples.map-b70jh5xu', {opacity: 0.5})
-			.setView([52.481707,13.356576], 17);
+			.setView([52.481707,13.356576], 19);
 		var map2 = L.mapbox.map('map2', 'examples.map-cnkhv76j', { zoomControl:false })
-			.setView([52.481707,13.356576], 17);
+			.setView([52.481707,13.356576], 18);
 
 		// when either map finishes moving, trigger an update on the other one.
 		map1.on('moveend', follow).on('zoomend', follow);
@@ -308,6 +286,7 @@
 			alert("Diese Funktion wird gerade implementiert. Die Energieströme werden bald fließen!");
 		};
 		*/
+		
 		//initialize the variable myPath
 		var myPath;
 		//initialize the animationFunction und access the button over the DOM
@@ -315,34 +294,52 @@
 		var animationFunction = document.getElementById('animationButton');
 			
 	
-		/*### add a d3 svg/g-element to the map ###*/
+		//### add a d3 svg/g-element to the map 
 		// Initialize the SVG layer
 		map2._initPathRoot()    
 		//pick up the SVG from the map object
-		var svg = d3.select("#map2").select("svg"),
-		g = svg.append("g")
-				.attr("class", "route");
+		var svg = d3.select("#map2").select("svg");
+		
 				
-		/*### add lines ###*/
+		//### add lines ###
 		// Add a second SVG element to Leaflet’s overlay pane to make sure that they fit together
 		var svg2 = d3.select(map2.getPanes().overlayPane).append("svg2"),
 			// the g element make sure that the D3- and Leaflet-Layer has the same point of reference
 			g2 = svg2.append("g2").attr("class", "leaflet-zoom-hide");
+			
+		var drawCounter = 0;	
+		var drawFunction;
+			
+			drawFunction(line1);
+			drawFunction(line2);
+			drawFunction(line3);
+			drawFunction(line4);
+			drawFunction(line5);
+			drawFunction(line6);
+			drawFunction(line7);
+			drawFunction(line8);
+			drawFunction(line9);
+			drawFunction(line10);
 		
-		//load the json-data	
-		//d3.json("", function(geoShape) {
-			// create a d3.geo.path to convert GeoJSON to SVG
+		
+		function drawFunction (line) {	
+			g = svg.append("g")
+				.attr("class", "route" + drawCounter)
+				.attr("id", drawCounter);
+		
 			//transform corectly the latitude/longitude coordinates to screen coordinates
 			var transform = d3.geo.transform({point: projectPoint}),
 			path = d3.geo.path().projection(transform);
 				
 			// create path elements for each of the features and append it to our g group
+			var featureLength = msgLines.features.length;
+			
+			//load the json-data		
 			d3_features = g.selectAll("path")
-				.data(msgLines.features)
+				.data(line.features)
 				.enter().append("path").attr("d", path)
-				.attr('id', 'ff')
+				.attr('id', line.features[0].properties.id)
 				.style("stroke", "white")
-				//.style("stroke-width", 9)
 				.style("fill", "none");
 			
 			// make sure that the d3 element changes when we zoom or pan 
@@ -350,7 +347,7 @@
 				
 			reset();
 				
-		// fit the SVG element to leaflet's map layer -> reset the d3-layer when the extant changes
+			// fit the SVG element to leaflet's map layer -> reset the d3-layer when the extant changes
 			function reset() {
 				//take the current coordinates of the topLeft and buttomRight corners
 				bounds = path.bounds(msgLines);
@@ -366,144 +363,483 @@
 		// initialize the path data
 			d3_features.attr("d", path)
 						.style("fill-opacity", 0.7)
-						.attr('fill','blue');
+						.attr('fill','blue')
+						.attr('id', drawCounter);
 			}
 		
-		// Use Leaflet to implement a D3 geometric transformation.
 		// take the latitude and longitudes and transform them into screen coordinates
 			function projectPoint(x, y) {
 				var point = map2.latLngToLayerPoint(new L.LatLng(y, x));
 				this.stream.point(point.x, point.y);
 			}
-			
-		//### animate the path --> use the function###
-		//original code from here: http://jsfiddle.net/5m35J/6/
-		//animationFunction.onclick = startAnimation;
-			
-		//});
+		//set the counter one in plus
+		drawCounter++;
+		}	
 	
-	//### animate the path --> this is the function###
-	//original code from here: http://jsfiddle.net/5m35J/6/
+	// ### animation
+	// animate the path by click --> use the animation function
+	animationFunction.onclick = startAnimation;
+			
+	
+	// animate the path --> this is the function
+	// original code from here: http://jsfiddle.net/5m35J/6/
 	function startAnimation() {
 		
 		// declare some variables
-		var vis, xy, duration, offset, origin_x, origin_y, len, circle, circle2, circle3;
+		var vis, xy, duration, offset, origin_x, origin_y, len, circle, circle0, circle1, circle2, circle3;
 
-		// select the correct layer
-		var vis = d3.select(".leaflet-overlay-pane")
-			.data(line.features)
-			.enter();
-		console.log(vis);
-		//var countLength = msgLines.length;
-		//console.log(countLength);
-		
-		//for loop for each feature in the jsonfile
-		var counter = 0;
-		for (feature in msgLines.features) {
-		console.log("JUHUUUU!");
+		var lineNumber = 0;
+		var v = 0.02;
+
+		//### Runde 1
 		
 		var group = svg.append("svg:g");
 		
 		//take the path from the geojson
-		var targetPath = d3.selectAll('.route')[0][0];
-		console.log(targetPath);
+		var targetPath = d3.selectAll('.route0')[0][0];
 		var pathNode = d3.select(targetPath).selectAll('path').node();
-		console.log("pathNode");
-		console.log(pathNode);
-		var pathLength = pathNode.getTotalLength();
-		console.log(pathLength);
+		var pathLength = pathNode.getTotalLength();	
+		//console.log(pathLength);
+		duration = pathLength/v;
+		
+		//take the energy value from the data
+		var energyValue = data_producer[1].WEA_Haus1;
+		//console.log(energyValue);
+		var energyMag = energyValue;
+		
+		if (energyMag > 0 && energyMag <= 0.3) {
+			//one circle
+			//append the circle to the first vertex of the geojson
+			circle = group.append("circle")
+				.attr({
+				r: 5,
+				fill: '#00BFFF',
+				transform: function () {
+					var p = pathNode.getPointAtLength(0)
+					return "translate(" + [p.x, p.y] + ")";
+				},
+				id: lineNumber
+			});
+
+			circle.transition()
+				.duration(duration)
+					.delay(750)
+				.ease("linear")
+				.attrTween("transform", function (d, i) {
+				return function (t) {
+					var p = pathNode.getPointAtLength(pathLength*t);
+					return "translate(" + [p.x, p.y] + ")";
+				}
+			});
+		} else if (energyMag > 0.3 && energyMag <= 0.6) {
+			//2 circles
+			circle = group.append("circle")
+				.attr({
+				r: 5,
+				fill: '#00BFFF',
+				transform: function () {
+					var p = pathNode.getPointAtLength(0)
+					return "translate(" + [p.x, p.y] + ")";
+				}
+			});
+			circle2 = group.append("circle")
+				.attr({
+				r: 5,
+				fill: '#00BFFF',
+				transform: function () {
+					var p = pathNode.getPointAtLength(0)
+					return "translate(" + [p.x, p.y] + ")";
+				}
+			});
+			
+			// move the circle along the path
+			circle.transition()
+				.duration(duration)
+					.delay(750)
+				.ease("linear")
+				.attrTween("transform", function (d, i) {
+				return function (t) {
+					var p = pathNode.getPointAtLength(pathLength*t);
+					return "translate(" + [p.x, p.y] + ")";
+				}
+			});
+			circle2.transition()
+				.duration(duration)
+					.delay(1250)
+				.ease("linear")
+				.attrTween("transform", function (d, i) {
+				return function (t) {
+					var p = pathNode.getPointAtLength(pathLength*t);
+					return "translate(" + [p.x, p.y] + ")";
+				}
+			});
+		} else {
+			//3 circles
+			circle = group.append("circle")
+				.attr({
+				r: 5,
+				fill: '#00BFFF',
+				transform: function () {
+					var p = pathNode.getPointAtLength(0)
+					return "translate(" + [p.x, p.y] + ")";
+				}
+			});
+			circle2 = group.append("circle")
+				.attr({
+				r: 5,
+				fill: '#00BFFF',
+				transform: function () {
+					var p = pathNode.getPointAtLength(0)
+					return "translate(" + [p.x, p.y] + ")";
+				}
+			});
+			circle3 = group.append("circle")
+				.attr({
+				r: 5,
+				fill: '#00BFFF',
+				transform: function () {
+					var p = pathNode.getPointAtLength(0)
+					return "translate(" + [p.x, p.y] + ")";
+				}
+			});
+
+			// move the circle along the path
+			circle.transition()
+				.duration(duration)
+					.delay(750)
+				.ease("linear")
+				.attrTween("transform", function (d, i) {
+				return function (t) {
+					var p = pathNode.getPointAtLength(pathLength*t);
+					return "translate(" + [p.x, p.y] + ")";
+				}
+			});
+			circle2.transition()
+				.duration(duration)
+					.delay(1250)
+				.ease("linear")
+				.attrTween("transform", function (d, i) {
+				return function (t) {
+					var p = pathNode.getPointAtLength(pathLength*t);
+					return "translate(" + [p.x, p.y] + ")";
+				}
+			});
+			
+			circle3.transition()
+				.duration(duration)
+					.delay(1750)
+				.ease("linear")
+				.attrTween("transform", function (d, i) {
+				return function (t) {
+					var p = pathNode.getPointAtLength(pathLength*t);
+					return "translate(" + [p.x, p.y] + ")";
+				}
+			});
+		};
+		
+		
+		//### Runde 2
+		var group2 = svg.append("svg:g");
+		
+		//take the path from the geojson
+		var targetPath2 = d3.selectAll('.route1')[0][0];
+		var pathNode2 = d3.select(targetPath2).selectAll('path').node();
+		var pathLength2 = pathNode2.getTotalLength();
 		
 		//append the circle to the first vertex of the geojson
-		circle = group.append("circle")
+		circle = group2.append("circle")
 			.attr({
 			r: 5,
 			fill: '#00BFFF',
 			transform: function () {
-				var p = pathNode.getPointAtLength(0)
+				var p = pathNode2.getPointAtLength(0)
 				return "translate(" + [p.x, p.y] + ")";
-			}
+			},
+			id: lineNumber
 		});
-		console.log(circle);
 		
-		circle2 = group.append("circle")
-			.attr({
-			r: 5,
-			fill: '#00BFFF',
-			transform: function () {
-				var p = pathNode.getPointAtLength(0)
-				return "translate(" + [p.x, p.y] + ")";
-			}
-		});
-		circle3 = group.append("circle")
-			.attr({
-			r: 5,
-			fill: '#00BFFF',
-			transform: function () {
-				var p = pathNode.getPointAtLength(0)
-				return "translate(" + [p.x, p.y] + ")";
-			}
-		});
 
-		// move the circle along the path
-		duration = 1000;
+		duration = pathLength2/v;
+		//var theCircle = "circle" + i;
 		circle.transition()
 			.duration(duration)
 				.delay(750)
 			.ease("linear")
 			.attrTween("transform", function (d, i) {
 			return function (t) {
-				var p = pathNode.getPointAtLength(pathLength*t);
+				var p = pathNode2.getPointAtLength(pathLength2*t);
 				return "translate(" + [p.x, p.y] + ")";
 			}
 		});
-		circle2.transition()
-			.duration(duration)
-				.delay(1000)
-			.ease("linear")
-			.attrTween("transform", function (d, i) {
-			return function (t) {
-				var p = pathNode.getPointAtLength(pathLength*t);
-				return "translate(" + [p.x, p.y] + ")";
-			}
-		});
-		
-		circle3.transition()
-			.duration(duration)
-				.delay(1250)
-			.ease("linear")
-			.attrTween("transform", function (d, i) {
-			return function (t) {
-				var p = pathNode.getPointAtLength(pathLength*t);
-				return "translate(" + [p.x, p.y] + ")";
-			}
-		});
-		
-		counter++;
-		};
-	};
-		//### Aktuelle Zeit anzeigen ###
-		//Code-Example: http://jsfiddle.net/cse_tushar/fKKSb/
-		function checkTime(i) {
-			if (i < 10) {
-				i = "0" + i;
-			}
-			return i;
-		}
 
-		function startTime() {
-			var today = new Date();
-			var h = today.getHours();
-			var m = today.getMinutes();
-			var s = today.getSeconds();
-			// add a zero in front of numbers<10
-			m = checkTime(m);
-			s = checkTime(s);
-			document.getElementById('currentTime').innerHTML = h + ":" + m + ":" + s;
-			t = setTimeout(function () {
-				startTime()
-			}, 500);
-		}
-		startTime();
+		//### Runde 3
+		var group3 = svg.append("svg:g");
+		
+		//take the path from the geojson
+		var targetPath3 = d3.selectAll('.route2')[0][0];
+		var pathNode3 = d3.select(targetPath3).selectAll('path').node();
+		var pathLength3 = pathNode3.getTotalLength();
+
+		//append the circle to the first vertex of the geojson
+
+		circle = group3.append("circle")
+			.attr({
+			r: 5,
+			fill: '#00BFFF',
+			transform: function () {
+				var p = pathNode3.getPointAtLength(0)
+				return "translate(" + [p.x, p.y] + ")";
+			},
+			id: lineNumber
+		});
+
+		// move the circle along the path
+		duration = pathLength3/v;
+		circle.transition()
+			.duration(duration)
+				.delay(750)
+			.ease("linear")
+			.attrTween("transform", function (d, i) {
+			return function (t) {
+				var p = pathNode3.getPointAtLength(pathLength3*t);
+				return "translate(" + [p.x, p.y] + ")";
+			}
+		});
+
+		//### Runde 4
+		var group4 = svg.append("svg:g");
+		
+		//take the path from the geojson
+		var targetPath4 = d3.selectAll('.route3')[0][0];
+		var pathNode4 = d3.select(targetPath4).selectAll('path').node();
+		var pathLength4 = pathNode4.getTotalLength();
+
+		//append the circle to the first vertex of the geojson
+		circle = group4.append("circle")
+			.attr({
+			r: 5,
+			fill: '#00BFFF',
+			transform: function () {
+				var p = pathNode4.getPointAtLength(0)
+				return "translate(" + [p.x, p.y] + ")";
+			},
+			id: lineNumber
+		});
+
+		// move the circle along the path
+		duration = pathLength4/v;
+		circle.transition()
+			.duration(duration)
+				.delay(750)
+			.ease("linear")
+			.attrTween("transform", function (d, i) {
+			return function (t) {
+				var p = pathNode4.getPointAtLength(pathLength4*t);
+				return "translate(" + [p.x, p.y] + ")";
+			}
+		});
+
+		//### Runde 5
+		var group5 = svg.append("svg:g");
+		
+		//take the path from the geojson
+		var targetPath5 = d3.selectAll('.route4')[0][0];
+		var pathNode5 = d3.select(targetPath5).selectAll('path').node();
+		var pathLength5 = pathNode5.getTotalLength();
+
+		//append the circle to the first vertex of the geojson
+		circle = group5.append("circle")
+			.attr({
+			r: 5,
+			fill: '#00BFFF',
+			transform: function () {
+				var p = pathNode5.getPointAtLength(0)
+				return "translate(" + [p.x, p.y] + ")";
+			},
+			id: lineNumber
+		});
+
+		// move the circle along the path
+		duration = pathLength5/v;
+		circle.transition()
+			.duration(duration)
+				.delay(750)
+			.ease("linear")
+			.attrTween("transform", function (d, i) {
+			return function (t) {
+				var p = pathNode5.getPointAtLength(pathLength5*t);
+				return "translate(" + [p.x, p.y] + ")";
+			}
+		});
+		
+		//### Runde 6
+		var group6 = svg.append("svg:g");
+		
+		//take the path from the geojson
+		var targetPath6 = d3.selectAll('.route5')[0][0];
+		var pathNode6 = d3.select(targetPath6).selectAll('path').node();
+		var pathLength6 = pathNode6.getTotalLength();
+
+		//append the circle to the first vertex of the geojson
+		circle = group6.append("circle")
+			.attr({
+			r: 5,
+			fill: '#00BFFF',
+			transform: function () {
+				var p = pathNode6.getPointAtLength(0)
+				return "translate(" + [p.x, p.y] + ")";
+			},
+			id: lineNumber
+		});
+
+		// move the circle along the path
+		duration = pathLength6/v;
+		circle.transition()
+			.duration(duration)
+				.delay(750)
+			.ease("linear")
+			.attrTween("transform", function (d, i) {
+			return function (t) {
+				var p = pathNode6.getPointAtLength(pathLength6*t);
+				return "translate(" + [p.x, p.y] + ")";
+			}
+		});
+		
+		//### Runde 7
+		var group7 = svg.append("svg:g");
+		
+		//take the path from the geojson
+		var targetPath7 = d3.selectAll('.route6')[0][0];
+		var pathNode7 = d3.select(targetPath7).selectAll('path').node();
+		var pathLength7 = pathNode7.getTotalLength();
+
+		//append the circle to the first vertex of the geojson
+		circle = group7.append("circle")
+			.attr({
+			r: 5,
+			fill: '#00BFFF',
+			transform: function () {
+				var p = pathNode7.getPointAtLength(0)
+				return "translate(" + [p.x, p.y] + ")";
+			},
+			id: lineNumber
+		});
+
+		// move the circle along the path
+		duration = pathLength7/v;
+		circle.transition()
+			.duration(duration)
+				.delay(750)
+			.ease("linear")
+			.attrTween("transform", function (d, i) {
+			return function (t) {
+				var p = pathNode7.getPointAtLength(pathLength7*t);
+				return "translate(" + [p.x, p.y] + ")";
+			}
+		});
+		
+		//### Runde 8
+		var group8 = svg.append("svg:g");
+		
+		//take the path from the geojson
+		var targetPath8 = d3.selectAll('.route7')[0][0];
+		var pathNode8 = d3.select(targetPath8).selectAll('path').node();
+		var pathLength8 = pathNode8.getTotalLength();
+
+		//append the circle to the first vertex of the geojson
+		circle = group8.append("circle")
+			.attr({
+			r: 5,
+			fill: '#00BFFF',
+			transform: function () {
+				var p = pathNode8.getPointAtLength(0)
+				return "translate(" + [p.x, p.y] + ")";
+			},
+			id: lineNumber
+		});
+
+		// move the circle along the path
+		duration = pathLength8/v;
+		circle.transition()
+			.duration(duration)
+				.delay(750)
+			.ease("linear")
+			.attrTween("transform", function (d, i) {
+			return function (t) {
+				var p = pathNode8.getPointAtLength(pathLength8*t);
+				return "translate(" + [p.x, p.y] + ")";
+			}
+		});
+		
+		//### Runde 9
+		var group9 = svg.append("svg:g");
+		
+		//take the path from the geojson
+		var targetPath9 = d3.selectAll('.route8')[0][0];
+		var pathNode9 = d3.select(targetPath9).selectAll('path').node();
+		var pathLength9 = pathNode9.getTotalLength();
+
+		//append the circle to the first vertex of the geojson
+		circle = group9.append("circle")
+			.attr({
+			r: 5,
+			fill: '#00BFFF',
+			transform: function () {
+				var p = pathNode9.getPointAtLength(0)
+				return "translate(" + [p.x, p.y] + ")";
+			},
+			id: lineNumber
+		});
+
+		// move the circle along the path
+		duration = pathLength9/v;
+		circle.transition()
+			.duration(duration)
+				.delay(750)
+			.ease("linear")
+			.attrTween("transform", function (d, i) {
+			return function (t) {
+				var p = pathNode9.getPointAtLength(pathLength9*t);
+				return "translate(" + [p.x, p.y] + ")";
+			}
+		});
+		
+		//### Runde 10
+		var group10 = svg.append("svg:g");
+		
+		//take the path from the geojson
+		var targetPath10 = d3.selectAll('.route9')[0][0];
+		var pathNode10 = d3.select(targetPath10).selectAll('path').node();
+		var pathLength10 = pathNode10.getTotalLength();
+
+		//append the circle to the first vertex of the geojson
+		circle = group10.append("circle")
+			.attr({
+			r: 5,
+			fill: '#00BFFF',
+			transform: function () {
+				var p = pathNode10.getPointAtLength(0)
+				return "translate(" + [p.x, p.y] + ")";
+			},
+			id: lineNumber
+		});
+
+		// move the circle along the path
+		duration = pathLength10/v;
+		circle.transition()
+			.duration(duration)
+				.delay(750)
+			.ease("linear")
+			.attrTween("transform", function (d, i) {
+			return function (t) {
+				var p = pathNode10.getPointAtLength(pathLength10*t);
+				return "translate(" + [p.x, p.y] + ")";
+			}
+		});
+
+		lineNumber++;
+
+	};
 		
 		</script>
   </body>
