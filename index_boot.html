@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap-Test</title>
 	
+	<!-- D3 -->
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 	
 	<!-- App -->
@@ -17,6 +18,10 @@
 	<!-- Mapbox -->
 	<script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.1/mapbox.js'></script>
 	<link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.1/mapbox.css' rel='stylesheet' />
+	
+	<!-- DVF -->
+	<script type="text/javascript" src="js/leaflet-dvf.markers.min.js"></script>
+	<link href="css/dvf.css" rel="stylesheet" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -26,11 +31,6 @@
     <![endif]-->
   </head>
   <body>
-	<!-- Daten einladen-->
-	<script src='data/msgPoints.js'></script>
-	<script src='data/msgLines.js'></script>
-	<script src="data/line.js">//do we need this? -> yes</script>
-  
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -55,39 +55,6 @@
 			<li class="active"><a href="#">Map</a></li>
 			<li><a href="#">About</a></li>
 			<li><img id="navLogo" src="img/logo2.png"></li>
-			<!-- 
-			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
-			  <ul class="dropdown-menu" role="menu">
-				<li><a href="#">Action</a></li>
-				<li><a href="#">Another action</a></li>
-				<li><a href="#">Something else here</a></li>
-				<li class="divider"></li>
-				<li><a href="#">Separated link</a></li>
-				<li class="divider"></li>
-				<li><a href="#">One more separated link</a></li>
-			  </ul>
-			</li>
-		  </ul>
-		  <form class="navbar-form navbar-left" role="search">
-			<div class="form-group">
-			  <input type="text" class="form-control" placeholder="Search">
-			</div>
-			<button type="submit" class="btn btn-default">Submit</button>
-		  </form>
-		  <ul class="nav navbar-nav navbar-right">
-			<li><a href="#">Link</a></li>
-			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
-			  <ul class="dropdown-menu" role="menu">
-				<li><a href="#">Action</a></li>
-				<li><a href="#">Another action</a></li>
-				<li><a href="#">Something else here</a></li>
-				<li class="divider"></li>
-				<li><a href="#">Separated link</a></li>
-				<span class="glyphicon glyphicon-info-sign"></span>
-			  </ul>
-			</li>-->
 		  </ul>
 		</div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->
@@ -119,22 +86,42 @@
 	<div id="titleEnergy">Energy-View</div>
 	<div id="currentTime"></div>
 	<div id="locationLegend"><img id="locationLegend" src="img/LegendInnoZLocation.png"></div>
-		<script>
+	
+	<!-- Geodaten laden-->
+	<script src='data/msgPoints.js'></script>
+	<script src='data/msgLines.js'></script>
+	<script src="data/line.js">//do we need this? -> yes</script>
+	
+	<!-- JavaScript-Code -->
+	<script>
+		//### Laden der aktuellen Daten ###
+		var json = (function() {
+			var json = null;
+			$.ajax({
+				'async': false,
+				'global': false,
+				'url': "data/data_producer.json",
+				'dataType': "json",
+				'success': function (data) {
+					json = data;
+				}
+			});
+			console.log("Daten werden geladen...");
+			return json;
+		})();
+		console.log("Daten wurden geladen!");
+		console.log(json);
 		
-		/*
+		var moverValue = json[0].Mover;
+		console.log(moverValue);
+		
 		//### Inizialisierung der Karte ###
-		var map = L.mapbox.map('map')
-					.setView([52.481707, 13.356576], 18);
-		//### Hintergrundkarten definieren ###
-		var coolMap = L.mapbox.tileLayer('examples.map-51f69fea').addTo(map);
-		*/
-		// Instead of our usual one map, we will create two in this example to make
-		// things interesting.
-		var map1 = L.mapbox.map('map1', 'examples.map-b70jh5xu', {opacity: 0.5})
+		var map1 = L.mapbox.map('map1', 'examples.map-b70jh5xu')
 			.setView([52.481707,13.356576], 17);
 		var map2 = L.mapbox.map('map2', 'examples.map-cnkhv76j', { zoomControl:false })
 			.setView([52.481707,13.356576], 17);
-
+		
+		//Quellcode für Syncronisation stamt von Mapbox --> https://www.mapbox.com/mapbox.js/example/v1.0.0/sync-layer-movement-antipode/
 		// when either map finishes moving, trigger an update on the other one.
 		map1.on('moveend', follow).on('zoomend', follow);
 		map2.on('moveend', follow).on('zoomend', follow);
@@ -165,61 +152,35 @@
 		L.control.scale().addTo(map1);
 		
 		//### Punkte und Linien einbinden ###
-		var msgPoints = msgPoints; //schreibt js-Inhalt in Variable
-
-		//Punkte hinzufügen --> alte Punkte
-		//map.featureLayer.setGeoJSON(msgPoints); // add points with style
-
-		//Popup hinzufügen --> vertragt sich nicht mit dem style und überlagert sich daher mit den bereits eingefügten Punkten
-		/*
-		var myLayer = L.geoJson(msgPoints, {
-			// style: function (feature) {
-			//     return feature.properties.style;
-			// },
-			 onEachFeature: function (feature, layer) {
-				 layer.bindPopup(feature.properties.type + '</br>' + 
-									'Energiewert: ' + feature.properties.value);
-			 }
-		 });
-
-		 
-		//myLayer.addData(msgPoints);
-		myLayer.addTo(map);
-		*/
+		var msgPoints = msgPoints; 
 		
-		//### hinzufügen von individuellen Markern ###
+		//### Hinzufügen von individuellen Markern ###
 		// dafür sollte eine Funktion erstellt werden!
+		
+		//### Location-View ###
 			//große Symbole
 			var LeafIcon = L.Icon.extend({
 				options: {
-					//shadowUrl: '../docs/images/leaf-shadow.png',
-					iconSize:     [80, 80],
-					//shadowSize:   [50, 64],
-					//iconAnchor:   [22, 94],
-					//shadowAnchor: [4, 62],
+					iconSize:     [35, 35],
 					popupAnchor:  [0, -10]
 				}
 			});
 			//kleine Symbole
 			var LeafIconLittle = L.Icon.extend({
 				options: {
-					//shadowUrl: '../docs/images/leaf-shadow.png',
 					iconSize:     [30, 28],
-					//shadowSize:   [50, 64],
-					//iconAnchor:   [22, 94],
-					//shadowAnchor: [4, 62],
 					popupAnchor:  [0, -10]
 				}
 			});
 
-			var batterieIcon = new LeafIcon({iconUrl: 'img/battery_ebattery_w.png'}),
-				windIcon = new LeafIcon({iconUrl: 'img/producer_wind_w.png'}),
-				chargingIcon = new LeafIcon({iconUrl: 'img/battery_ecar_w.png'}),
-				photoIcon = new LeafIcon({iconUrl: 'img/producer_solar_w.png'}),
-				brainIcon = new LeafIcon({iconUrl: 'img/minigrid_minigrid_w.png'}),
+			var batterieIcon = new LeafIcon({iconUrl: 'img/msg_batteryFull.png'}),
+				windIcon = new LeafIcon({iconUrl: 'img/msg_windFull.png'}),
+				chargingIcon = new LeafIcon({iconUrl: 'img/msg_chargeFull.png'}),
+				photoIcon = new LeafIcon({iconUrl: 'img/msg_solarFull.png'}),
+				brainIcon = new LeafIcon({iconUrl: 'img/msg_brainFull.png'}),
 				netIcon = new LeafIconLittle({iconUrl: 'img/netconnectionT.png'});
 			
-			//Add marker to Map1
+			//Marker zu Karte [Map1] hinzufügen
 			L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).addTo(map1);
 			L.marker([52.480688658255012 , 13.354568528677662], {icon: windIcon}).addTo(map1);
 			L.marker([52.480911923161734, 13.355110029627905], {icon: windIcon}).addTo(map1);
@@ -233,64 +194,91 @@
 			L.marker([52.480605, 13.354743], {icon: netIcon}).addTo(map1);
 			L.marker([52.482146, 13.357430], {icon: brainIcon}).addTo(map1);
 			
-			//Add marker to Map2 with popup
-			L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("<h4>I am a battery.</h4> <p> Capacity: 80% </p>").addTo(map2);
-			L.marker([52.480688658255012 , 13.354568528677662], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
-			L.marker([52.480911923161734, 13.355110029627905], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
-			L.marker([52.481457 , 13.355791], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
-			L.marker([52.48159684369503, 13.355837930668985], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
-			L.marker([52.481227, 13.356873], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
-			L.marker([52.481662, 13.357115], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
-			L.marker([52.482262, 13.357565], {icon: photoIcon}).bindPopup("<img src='img/popup_small.png'/>").addTo(map2);
-			L.marker([52.482455631243511, 13.357434101623429], {icon: photoIcon}).bindPopup("I am a solar mover.").addTo(map2);
-			L.marker([52.481356, 13.355660], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map2);
-			L.marker([52.480605, 13.354743], {icon: netIcon}).bindPopup("Connection to the electric grid.").addTo(map2);
-			L.marker([52.482146, 13.357430], {icon: brainIcon}).bindPopup("I am the brain of the grid.").addTo(map2);
+			
+		//### Energy-View ###	
+		//### RadialMeterMarker ###
+		var minHue = 120;
+		var maxHue = 0; 
+		//var testLon = msgPoints.features[0].geometry.coordinates[0];
+		//console.log(testLon);
+		//var testLat = msgPoints.features[0].geometry.coordinates[1];
+		//console.log(testLat);
+		//var markerLat = 52.480688658255012;
+		//var markerLon = 13.354568528677662;
 		
+		var windNorm = 500;
+		var solarNorm = 50;
 		
-		//Add Energy-Circles
-		//Code-Example: http://stackoverflow.com/questions/22467177/draw-a-circle-of-constant-size-for-all-zoom-levels-leaflet-js
-		var windValue1 = 0.5;
-		var windValue2 = 1;
-		/*
-		//Berechnung der Kreisgröße anhand der Stevenschen psychophisischen Potenzfunktion
-		var circleRadius1 = (Math.pow(windValue1, (5/7)))/(Math.sqrt(2*Math.PI));
-		var circleRadius2 = (Math.pow(windValue2, (5/7)))/(Math.sqrt(2*Math.PI));
-		
-		var circleRadius1 = windValue1 * 20;
-		var circleRadius2 = windValue2 * 20;
-		var coordinates1 = [52.481227, 13.354743];
-		var coordinates2 = [52.48166, 13.357115];
-		drawCircle(circleRadius1, coordinates1);
-		drawCircle(circleRadius2, coordinates2);
-		
-		function drawCircle(circleRadius, coordinates) {
-		var circleStyle = {
-			fillColor: '#00BFFF',
-			fillOpacity: 0.5
-		};
-		var circle = L.circle(coordinates, circleRadius, circleStyle).addTo(map2);
-
-		var myZoom = {
-		  start:  map2.getZoom(),
-		  end: map2.getZoom()
-		};
-
-		map2.on('zoomstart', function(e) {
-		   myZoom.start = map2.getZoom();
-		});
-
-		map2.on('zoomend', function(e) {
-			myZoom.end = map2.getZoom();
-			var diff = myZoom.start - myZoom.end;
-			if (diff > 0) {
-				circle.setRadius(circle.getRadius() * 2);
-			} else if (diff < 0) {
-				circle.setRadius(circle.getRadius() / 2);
+		for (var i = 0; i < msgPoints.features.length; i++) {
+			if (msgPoints.features[i].properties.type === "Windkraftanlage") {
+				console.log("Wind");
+				addRadialMarker(msgPoints.features[i].geometry.coordinates[1], msgPoints.features[i].geometry.coordinates[0], json[0].WEA_Haus1, windNorm);
 			}
-		});
+		};
+		
+		for (var i = 0; i < msgPoints.features.length; i++) {
+			if (msgPoints.features[i].properties.type === "Photovoltaikanlage") {
+				console.log("Solar");
+				addRadialMarker(msgPoints.features[i].geometry.coordinates[1], msgPoints.features[i].geometry.coordinates[0], json[0].Mover, solarNorm);
+			}
+		};
+		//addRadialMarker(markerLat, markerLon, moverValue);
+		//addRadialMarker(msgPoints.features[1].geometry.coordinates[1], msgPoints.features[1].geometry.coordinates[0], moverValue);
+
+		function addRadialMarker (yCoord, xCoord, eValue, norm) {
+			var radialMarker = new L.RadialMeterMarker(new L.LatLng(yCoord, xCoord), {
+			   data: {
+					'Capasity': eValue * norm
+				},
+				chartOptions: {
+					'Capasity': {
+						displayName: 'Auslastung',
+						displayText: function (value) {
+						return value.toFixed(1);
+						},
+						color: 'hsl(190,50%,45%)',
+						fillColor: 'hsl(190,50%,45%)',
+						maxValue: 100,
+						minValue: 0
+					}
+				},
+				displayOptions: {
+					'Capasity': {
+						color: 'hsl(190,50%,45%)',
+						fillColor: 'hsl(190,50%,45%)',
+					}
+				},
+				fillOpacity: 0.6,
+				opacity: 1,
+				weight: 0.5,
+				radius: 30,
+				barThickness: 15,
+				maxDegrees: 360,
+				rotation: 0,
+				numSegments: 10
+			});
+
+			map2.addLayer(radialMarker);
+			
 		}
-		*/
+		
+		
+		//### Hinzufügen von individuellen Markern ###
+		
+		//L.marker([52.481707, 13.356576], {icon: photoIcon}).bindPopup("<h4>I am a solar panel.</h4> <p> Capacity: 80% </p>").addTo(map2);
+		L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("<h4>I am a battery.</h4> <p> Capacity: 80% </p>").addTo(map2);
+		L.marker([52.480688658255012 , 13.354568528677662], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
+		L.marker([52.480911923161734, 13.355110029627905], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
+		L.marker([52.481457 , 13.355791], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
+		L.marker([52.48159684369503, 13.355837930668985], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
+		L.marker([52.481227, 13.356873], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
+		L.marker([52.481662, 13.357115], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
+		L.marker([52.482262, 13.357565], {icon: photoIcon}).bindPopup("<img src='img/popup_small.png'/>").addTo(map2);
+		L.marker([52.482455631243511, 13.357434101623429], {icon: photoIcon}).bindPopup("I am a solar mover.").addTo(map2);
+		L.marker([52.481356, 13.355660], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map2);
+		L.marker([52.480605, 13.354743], {icon: netIcon}).bindPopup("Connection to the electric grid.").addTo(map2);
+		L.marker([52.482146, 13.357430], {icon: brainIcon}).bindPopup("I am the brain of the grid.").addTo(map2);
+	
 		//### add Lines with Leaflet-Funktion
 		//Linien befinden sich später in der D3-Ebene
 		var lines = msgLines;
@@ -340,7 +328,7 @@
 			d3_features = g.selectAll("path")
 				.data(msgLines.features)
 				.enter().append("path").attr("d", path)
-				.attr('id', 'ff')
+				.attr('id', msgLines.features[0].properties.id)
 				.style("stroke", "white")
 				//.style("stroke-width", 9)
 				.style("fill", "none");
@@ -498,7 +486,7 @@
 			// add a zero in front of numbers<10
 			m = checkTime(m);
 			s = checkTime(s);
-			document.getElementById('currentTime').innerHTML = h + ":" + m + ":" + s;
+			document.getElementById('currentTime').innerHTML = "aktuelle Zeit: " + h + ":" + m + ":" + s;
 			t = setTimeout(function () {
 				startTime()
 			}, 500);
