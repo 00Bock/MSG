@@ -80,12 +80,73 @@
 					onclick="startAnimation()"
 			/>
 		</div>
+		<!--
+		<div id="timeControl"> 
+			<span class="glyphicon glyphicon-play"></span>
+		</div>
+		-->
 	<!-- Animationsknopf hinzufügen-->
 	<!--<div><img id="logo" src="img/logo2.png"></div>-->
 	<div id="titleLocation">Location-View</div>
 	<div id="titleEnergy">Energy-View</div>
 	<div id="currentTime"></div>
+	<!--
 	<div id="locationLegend"><img id="locationLegend" src="img/LegendInnoZLocation.png"></div>
+	-->
+	<div id='legend' style='display:none;'>
+		<table>
+		<!--
+		<tr>
+			<td> 
+				
+				<span class="glyphicon glyphicon-play"></span> 
+				<span class="glyphicon glyphicon-pause"></span>
+				<span class="glyphicon glyphicon-stop"></span>
+				<span class="glyphicon glyphicon-refresh"></span>
+			</td>
+		</tr>
+		-->
+		<tr>
+			<td> 
+				<div class="legendText"> Erzeuger </div>
+			</td>
+			<td> 
+				<div id="circle"></div>
+			</td>
+		</tr>
+		<tr>
+			<td> Speicher </td>
+			<td> <div id="squere"></div> </td>
+		</tr>
+		<tr>
+			<td> Verbraucher </td>
+			<td> <div id="triangle"></div> </td>
+		</tr>
+		<tr>
+			<td> 
+				<div class="legendText"> Steuerelemente </div> 
+			</td>
+			<td> 
+				<div id="hexTop"></div>
+				<div id="hexMid"></div>
+				<div id="hexBot"></div>
+			</td>
+		</tr>
+		<tr>
+			<td> <span class="glyphicon glyphicon-flash"></span> Strom </td>
+			<td> <div id="electricity"></div> </td>
+		</tr>
+		<tr>
+			<td> <span class="glyphicon glyphicon-fire"></span> Wärme </td>
+			<td> <div id="heat"></div> </td>
+		</tr>
+		<tr>
+			<td> <span class="glyphicon glyphicon-tint"></span> Gas </td>
+			<td> <div id="gas"></div></td>
+		</tr>
+		
+		</table>		
+	</div>
 	
 	<!-- Geodaten laden-->
 	<script src='data/msgPoints.js'></script>
@@ -115,11 +176,15 @@
 		var moverValue = json[0].Mover;
 		console.log(moverValue);
 		
+		//L.mapbox.accessToken = '<your access token here>';
+		
 		//### Inizialisierung der Karte ###
 		var map1 = L.mapbox.map('map1', 'examples.map-b70jh5xu')
 			.setView([52.481707,13.356576], 17);
 		var map2 = L.mapbox.map('map2', 'examples.map-cnkhv76j', { zoomControl:false })
 			.setView([52.481707,13.356576], 17);
+			
+		map2.legendControl.addLegend(document.getElementById('legend').innerHTML);
 		
 		//Quellcode für Syncronisation stamt von Mapbox --> https://www.mapbox.com/mapbox.js/example/v1.0.0/sync-layer-movement-antipode/
 		// when either map finishes moving, trigger an update on the other one.
@@ -284,8 +349,8 @@
 				radius: 30,
 				barThickness: 15,
 				maxDegrees: 360,
-				rotation: 0,
-				numSegments: 10
+				rotation: 270,
+				numSegments: 1
 			});
 
 			map2.addLayer(radialMarker);
