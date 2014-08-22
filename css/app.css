@@ -14,6 +14,13 @@ body {
 	right:10px;
 	z-index:7;
 }
+#timeControl{
+	position:fixed;
+	top:120px;
+	right:150px;
+	z-index:7;
+	background: white;
+}
 #logo{position:fixed;
 	bottom:20px;
 	left:10px;
@@ -42,6 +49,7 @@ body {
 	z-index:7;
 	color: white;
 	font-size:1.5em;
+	text-shadow: 0 0 0.2em #8F7;
 }
 #titleEnergy{
 	position:fixed;
@@ -50,6 +58,7 @@ body {
 	z-index:7;
 	color: white;
 	font-size:1.5em;
+	text-shadow: 0 0 0.2em #388E8E, 0 0 0.2em #388E8E, 0 0 0.2em #388E8E;
 }
 #currentTime{
 	position:fixed;
@@ -74,4 +83,70 @@ body {
 	width:auto !important;
 	overflow: auto;
 }
-
+.legend label,
+.legend span {
+  display:block;
+  float:right;
+  height:15px;
+  width:20%;
+  text-align:center;
+  font-size:9px;
+  color:#808080;
+  z-index:8;
+  padding: 2px;
+  }
+.legendText {
+padding-right: 10px;
+}
+#triangle{
+font-size: 0px; line-height: 0%; width: 0px;
+border-bottom: 20px solid #3f3f3f;/* Dreieckfarbe*/
+border-left: 10px solid transparent;
+border-right: 10px solid transparent;
+} 
+#hexTop {
+float: left;
+border-right: 5px solid #3f3f3f;
+border-top: 10px solid transparent;
+border-bottom: 10px solid transparent;
+}
+#hexMid {
+float: left;
+width: 12px;
+height: 20px;
+background-color: #3f3f3f;
+}
+#hexBot {
+float: left;
+border-left: 5px solid #3f3f3f;
+border-top: 10px solid transparent;
+border-bottom: 10px solid transparent;
+}
+#squere {
+   width: 20px;
+   height: 20px;
+   background: #3f3f3f;
+}
+#circle {
+   width: 20px;
+   height: 20px;
+   background: #3f3f3f;
+   -moz-border-radius: 10px;
+   -webkit-border-radius: 10px;
+   border-radius: 10px;
+}
+#electricity {
+   width: 20px;
+   height: 5px;
+   background: #0099CC;
+}
+#heat {
+   width: 20px;
+   height: 5px;
+   background: #FF4500;
+}
+#gas {
+   width: 20px;
+   height: 5px;
+   background: #FFB90F;
+}

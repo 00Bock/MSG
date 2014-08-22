@@ -52,8 +52,8 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		  <ul class="nav navbar-nav">
-			<li class="active"><a href="#">Map</a></li>
-			<li><a href="#">About</a></li>
+			<li class="active"><a href="index_boot.html"><span class="glyphicon glyphicon-picture"></span> Map </a></li>
+			<li><a href="#"><span class="glyphicon glyphicon-info-sign"></span> About </a></li>
 			<li><img id="navLogo" src="img/logo2.png"></li>
 		  </ul>
 		</div><!-- /.navbar-collapse -->
@@ -85,7 +85,53 @@
 	<div id="titleLocation">Location-View</div>
 	<div id="titleEnergy">Energy-View</div>
 	<div id="currentTime"></div>
+	
 	<div id="locationLegend"><img id="locationLegend" src="img/LegendInnoZLocation.png"></div>
+	<!-- Legende sollte funktionieren, tut es aber nicht. Überprüfen!
+	<div id='legend' style='display:none;'>
+		<table>
+		<tr>
+			<td> 
+				<div class="legendText"> Erzeuger </div>
+			</td>
+			<td> 
+				<div id="circle"></div>
+			</td>
+		</tr>
+		<tr>
+			<td> Speicher </td>
+			<td> <div id="squere"></div> </td>
+		</tr>
+		<tr>
+			<td> Verbraucher </td>
+			<td> <div id="triangle"></div> </td>
+		</tr>
+		<tr>
+			<td> 
+				<div class="legendText"> Steuerelemente </div> 
+			</td>
+			<td> 
+				<div id="hexTop"></div>
+				<div id="hexMid"></div>
+				<div id="hexBot"></div>
+			</td>
+		</tr>
+		<tr>
+			<td> <span class="glyphicon glyphicon-flash"></span> Strom </td>
+			<td> <div id="electricity"></div> </td>
+		</tr>
+		<tr>
+			<td> <span class="glyphicon glyphicon-fire"></span> Wärme </td>
+			<td> <div id="heat"></div> </td>
+		</tr>
+		<tr>
+			<td> <span class="glyphicon glyphicon-tint"></span> Gas </td>
+			<td> <div id="gas"></div></td>
+		</tr>
+		
+		</table>		
+	</div>
+	-->
 	
 	<!-- Geodaten laden-->
 	<script src='data/msgPoints.js'></script>
