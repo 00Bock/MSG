@@ -367,7 +367,14 @@
 			"weight": 3,
 			"opacity": 0.65
 		};
-		L.geoJson(lines, {style: myStyle}).addTo(map1);
+		
+		var ELine = L.geoJson(lines, {style: myStyle}).addTo(map1);
+		
+		ELine.on('click', function() {
+				ELine.bindPopup(
+                    "Stromleitung"
+                );
+			})
 		
 		/*
 		var animation = document.getElementById('animationButton');
