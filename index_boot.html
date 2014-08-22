@@ -52,7 +52,7 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		  <ul class="nav navbar-nav">
-			<li class="active"><a href="index_boot.html"><span class="glyphicon glyphicon-picture"></span> Map </a></li>
+			<li class="active"><a href="#"><span class="glyphicon glyphicon-picture"></span> Map </a></li>
 			<li><a href="#"><span class="glyphicon glyphicon-info-sign"></span> About </a></li>
 			<li><img id="navLogo" src="img/logo2.png"></li>
 		  </ul>
@@ -85,53 +85,7 @@
 	<div id="titleLocation">Location-View</div>
 	<div id="titleEnergy">Energy-View</div>
 	<div id="currentTime"></div>
-	
 	<div id="locationLegend"><img id="locationLegend" src="img/LegendInnoZLocation.png"></div>
-	<!-- Legende sollte funktionieren, tut es aber nicht. Überprüfen!
-	<div id='legend' style='display:none;'>
-		<table>
-		<tr>
-			<td> 
-				<div class="legendText"> Erzeuger </div>
-			</td>
-			<td> 
-				<div id="circle"></div>
-			</td>
-		</tr>
-		<tr>
-			<td> Speicher </td>
-			<td> <div id="squere"></div> </td>
-		</tr>
-		<tr>
-			<td> Verbraucher </td>
-			<td> <div id="triangle"></div> </td>
-		</tr>
-		<tr>
-			<td> 
-				<div class="legendText"> Steuerelemente </div> 
-			</td>
-			<td> 
-				<div id="hexTop"></div>
-				<div id="hexMid"></div>
-				<div id="hexBot"></div>
-			</td>
-		</tr>
-		<tr>
-			<td> <span class="glyphicon glyphicon-flash"></span> Strom </td>
-			<td> <div id="electricity"></div> </td>
-		</tr>
-		<tr>
-			<td> <span class="glyphicon glyphicon-fire"></span> Wärme </td>
-			<td> <div id="heat"></div> </td>
-		</tr>
-		<tr>
-			<td> <span class="glyphicon glyphicon-tint"></span> Gas </td>
-			<td> <div id="gas"></div></td>
-		</tr>
-		
-		</table>		
-	</div>
-	-->
 	
 	<!-- Geodaten laden-->
 	<script src='data/msgPoints.js'></script>
@@ -226,20 +180,50 @@
 				brainIcon = new LeafIcon({iconUrl: 'img/msg_brainFull.png'}),
 				netIcon = new LeafIconLittle({iconUrl: 'img/netconnectionT.png'});
 			
-			//Marker zu Karte [Map1] hinzufügen
-			L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).addTo(map1);
-			L.marker([52.480688658255012 , 13.354568528677662], {icon: windIcon}).addTo(map1);
-			L.marker([52.480911923161734, 13.355110029627905], {icon: windIcon}).addTo(map1);
-			L.marker([52.481457 , 13.355791], {icon: windIcon}).addTo(map1);
-			L.marker([52.48159684369503, 13.355837930668985], {icon: windIcon}).addTo(map1);
-			L.marker([52.481227, 13.356873], {icon: windIcon}).addTo(map1);
-			L.marker([52.481662, 13.357115], {icon: windIcon}).addTo(map1);
-			L.marker([52.482262, 13.357565], {icon: photoIcon}).addTo(map1);
-			L.marker([52.482455631243511, 13.357434101623429], {icon: photoIcon}).addTo(map1);
-			L.marker([52.481356, 13.355660], {icon: photoIcon}).addTo(map1);
-			L.marker([52.480605, 13.354743], {icon: netIcon}).addTo(map1);
-			L.marker([52.482146, 13.357430], {icon: brainIcon}).addTo(map1);
+			//Marker zu den Karten hinzufügen
 			
+			for (var i = 0; i < msgPoints.features.length; i++) {
+				var lon = msgPoints.features[i].geometry.coordinates[1];
+				var lat = msgPoints.features[i].geometry.coordinates[0];
+				var type = msgPoints.features[i].properties.type;
+				switch (msgPoints.features[i].properties.type) {
+					case "Windkraftanlage" : 
+						L.marker([ lon, lat], {icon: windIcon}).bindPopup(type + "</br>" + "aktuelle Produktion: " + json[0].WEA_Haus1 + " kW").addTo(map1),
+						L.marker([ lon, lat], {icon: windIcon}).addTo(map2);
+						break;
+					case "Photovoltaikanlage" : 
+						L.marker([ lon, lat], {icon: photoIcon}).bindPopup("<img src='img/popup_small.png'/>").addTo(map1);
+						L.marker([ lon, lat], {icon: photoIcon}).addTo(map2);
+						break;
+					case "Batterie" : 
+						L.marker([ lon, lat], {icon: batterieIcon}).bindPopup(type + "</br>" + "aktuelle Produktion: " + json[0].Mover + " kW").addTo(map1);
+						L.marker([ lon, lat], {icon: batterieIcon}).addTo(map2);
+						break;
+					case "Steuerzentrale" : 
+						L.marker([ lon, lat], {icon: brainIcon}).bindPopup(type).addTo(map1);
+						L.marker([ lon, lat], {icon: brainIcon}).addTo(map2);
+						break;
+					case "Netzverbindung" : 
+						L.marker([ lon, lat], {icon: netIcon}).bindPopup(type).addTo(map1);
+						L.marker([ lon, lat], {icon: netIcon}).addTo(map2);
+						break;
+					default: console.log("Einige Elemente werden nicht dargestelt!");
+						break;
+				}
+			};
+			
+			/*
+			//http://stackoverflow.com/questions/12661685/2-different-leaflet-popup-styles
+			marker.on('mouseover', function() {
+				marker.bindPopup('<b>Hello world</b>',{className: 'mouseover-popup'});
+				marker.openPopup();
+			})
+
+			marker.on('click', function() {
+				marker.bindPopup('<b>Hello world</b>',{className: 'click-popup'});
+				marker.openPopup();
+			})
+			*/
 			
 		//### Energy-View ###	
 		//### RadialMeterMarker ###
@@ -309,22 +293,6 @@
 		}
 		
 		
-		//### Hinzufügen von individuellen Markern ###
-		
-		//L.marker([52.481707, 13.356576], {icon: photoIcon}).bindPopup("<h4>I am a solar panel.</h4> <p> Capacity: 80% </p>").addTo(map2);
-		L.marker([52.48243899971542, 13.35747111893229], {icon: batterieIcon}).bindPopup("<h4>I am a battery.</h4> <p> Capacity: 80% </p>").addTo(map2);
-		L.marker([52.480688658255012 , 13.354568528677662], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
-		L.marker([52.480911923161734, 13.355110029627905], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
-		L.marker([52.481457 , 13.355791], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
-		L.marker([52.48159684369503, 13.355837930668985], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
-		L.marker([52.481227, 13.356873], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
-		L.marker([52.481662, 13.357115], {icon: windIcon}).bindPopup("I am a wind wheel.").addTo(map2);
-		L.marker([52.482262, 13.357565], {icon: photoIcon}).bindPopup("<img src='img/popup_small.png'/>").addTo(map2);
-		L.marker([52.482455631243511, 13.357434101623429], {icon: photoIcon}).bindPopup("I am a solar mover.").addTo(map2);
-		L.marker([52.481356, 13.355660], {icon: photoIcon}).bindPopup("I am a solar panel.").addTo(map2);
-		L.marker([52.480605, 13.354743], {icon: netIcon}).bindPopup("Connection to the electric grid.").addTo(map2);
-		L.marker([52.482146, 13.357430], {icon: brainIcon}).bindPopup("I am the brain of the grid.").addTo(map2);
-	
 		//### add Lines with Leaflet-Funktion
 		//Linien befinden sich später in der D3-Ebene
 		var lines = msgLines;
