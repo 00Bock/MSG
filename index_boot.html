@@ -253,7 +253,7 @@
 				var type = msgPoints.features[i].properties.type;
 				switch (msgPoints.features[i].properties.type) {
 					case "Windkraftanlage" : 
-						L.marker([ lon, lat], {icon: windIcon}).bindPopup(type + "</br>" + "aktuelle Produktion: " + json[0].WEA_Haus1 + " kW").addTo(map1),
+						L.marker([ lon, lat], {icon: windIcon}).bindPopup("---------------------------------------------" + "</br>" + type + "</br>" + "aktuelle Produktion: " + json[0].WEA_Haus1 + " kW").addTo(map1),
 						L.marker([ lon, lat], {icon: windIcon}).addTo(map2);
 						break;
 					case "Photovoltaikanlage" : 
@@ -261,15 +261,15 @@
 						L.marker([ lon, lat], {icon: photoIcon}).addTo(map2);
 						break;
 					case "Batterie" : 
-						L.marker([ lon, lat], {icon: batterieIcon}).bindPopup(type + "</br>" + "aktuelle Produktion: " + json[0].Mover + " kW").addTo(map1);
+						L.marker([ lon, lat], {icon: batterieIcon}).bindPopup("---------------------------------------------" + "</br>" +type + "</br>" + "aktuelle Produktion: " + json[0].Mover + " kW").addTo(map1);
 						L.marker([ lon, lat], {icon: batterieIcon}).addTo(map2);
 						break;
 					case "Steuerzentrale" : 
-						L.marker([ lon, lat], {icon: brainIcon}).bindPopup(type).addTo(map1);
+						L.marker([ lon, lat], {icon: brainIcon}).bindPopup("---------------------------------------------" + "</br>" +type).addTo(map1);
 						L.marker([ lon, lat], {icon: brainIcon}).addTo(map2);
 						break;
 					case "Netzverbindung" : 
-						L.marker([ lon, lat], {icon: netIcon}).bindPopup(type).addTo(map1);
+						L.marker([ lon, lat], {icon: netIcon}).bindPopup("---------------------------------------------" + "</br>" +type).addTo(map1);
 						L.marker([ lon, lat], {icon: netIcon}).addTo(map2);
 						break;
 					default: console.log("Einige Elemente werden nicht dargestelt!");
