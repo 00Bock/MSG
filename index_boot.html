@@ -52,8 +52,8 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		  <ul class="nav navbar-nav">
-			<li class="active"><a href="#"><span class="glyphicon glyphicon-picture"></span> Map </a></li>
-			<li><a href="#"><span class="glyphicon glyphicon-info-sign"></span> About </a></li>
+			<li class="active"><a href="index_boot.html"><span class="glyphicon glyphicon-picture"></span> Map </a></li>
+			<li><a href="info.html"><span class="glyphicon glyphicon-info-sign"></span> Info </a></li>
 			<li><img id="navLogo" src="img/logo2.png"></li>
 		  </ul>
 		</div><!-- /.navbar-collapse -->
@@ -144,7 +144,15 @@
 			<td> <span class="glyphicon glyphicon-tint"></span> Gas </td>
 			<td> <div id="gas"></div></td>
 		</tr>
-		
+		<!--
+		<tr>
+			<div class="legendText"> Auslastung </div> 
+			<td>
+				<div id="donut"></div>
+				<div id="donutIn"></div>
+			</td>
+		</tr>
+		-->
 		</table>		
 	</div>
 	
@@ -253,7 +261,7 @@
 				var type = msgPoints.features[i].properties.type;
 				switch (msgPoints.features[i].properties.type) {
 					case "Windkraftanlage" : 
-						L.marker([ lon, lat], {icon: windIcon}).bindPopup("---------------------------------------------" + "</br>" + type + "</br>" + "aktuelle Produktion: " + json[0].WEA_Haus1 + " kW").addTo(map1),
+						L.marker([ lon, lat], {icon: windIcon}).bindPopup("---------------------------------------------" + "</br>" + type + "</br>" + "aktuelle Produktion: " + json[0].WEA_Haus1 + " kW" ).addTo(map1);
 						L.marker([ lon, lat], {icon: windIcon}).addTo(map2);
 						break;
 					case "Photovoltaikanlage" : 
@@ -276,6 +284,8 @@
 						break;
 				}
 			};
+			
+			//marker.bindPopup("<b>Hello world!</b><br />I am a popup.");
 			
 			/*
 			//http://stackoverflow.com/questions/12661685/2-different-leaflet-popup-styles
@@ -367,7 +377,6 @@
 			"weight": 3,
 			"opacity": 0.65
 		};
-		
 		var ELine = L.geoJson(lines, {style: myStyle}).addTo(map1);
 		
 		ELine.on('click', function() {

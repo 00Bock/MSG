@@ -35,6 +35,14 @@ body {
 	width: 280px;
     height: 100px;
 }
+#willkommenLogo{
+position: center;
+
+	z-index:7;
+	width: 600px;
+    height: 330px;
+	max-width: 100%;
+}
 #naviLogo{position:fixed;
 
 	left:10px;
@@ -79,10 +87,22 @@ body {
 	border-radius: 10px;
 	opacity: 0.95;
 }
+
+#legendo{
+	position:fixed;
+	bottom:60px;
+	left:10px;
+	z-index:9;
+	border-radius: 10px;
+	opacity: 0.95;
+}
+
 .leaflet-popup-content {
 	width:auto !important;
 	overflow: auto;
+	font-size:16px;	
 }
+/*
 .legend label,
 .legend span {
   display:block;
@@ -95,9 +115,11 @@ body {
   z-index:8;
   padding: 2px;
   }
+*/
 .legendText {
 padding-right: 10px;
 }
+
 #triangle{
 font-size: 0px; line-height: 0%; width: 0px;
 border-bottom: 20px solid #3f3f3f;/* Dreieckfarbe*/
@@ -135,6 +157,22 @@ border-bottom: 10px solid transparent;
    -webkit-border-radius: 10px;
    border-radius: 10px;
 }
+#donut {
+   width: 60px;
+   height: 60px;
+   background: #3f3f3f;
+   -moz-border-radius: 30px;
+   -webkit-border-radius: 30px;
+   border-radius: 30px;
+}
+#donutIn {
+   width: 40px;
+   height: 40px;
+   background: #000;
+   -moz-border-radius: 20px;
+   -webkit-border-radius: 20px;
+   border-radius: 20px;
+}
 #electricity {
    width: 20px;
    height: 5px;
@@ -149,4 +187,45 @@ border-bottom: 10px solid transparent;
    width: 20px;
    height: 5px;
    background: #FFB90F;
+}
+#info{
+z-index:7;
+border: 1px solid #666;
+font-size: 1.2em;
+color: #333;
+text-align: center;
+position: absolute;
+width: 600px;
+height: 400px;
+top: 50%;
+left: 50%;
+margin-top: -200px;
+margin-left: -300px;
+background: white;
+opacity: 0.8;
+border-bottom-left-radius: 20px;
+border-bottom-right-radius: 20px;
+border-top-left-radius: 20px;
+border-top-right-radius: 20px;
+}
+#info2{
+z-index:7;
+border: 1px solid #666;
+font-size: 1.2em;
+color: #333;
+text-align: center;
+position: absolute;
+width: 80%;
+height: 70%;
+top: 30%;
+left: 20%;
+margin-top: -10%;
+margin-left: -10%;
+padding: 10px;
+background: white;
+opacity: 0.9;
+border-bottom-left-radius: 20px;
+border-bottom-right-radius: 20px;
+border-top-left-radius: 20px;
+border-top-right-radius: 20px;
 }
